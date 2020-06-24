@@ -66,7 +66,8 @@ An arbitrary amount of messages may be lost
 
 # What is an epidemic register?
 
-Here's an implementation of an epidemic register from Burckhardt's [Principles of Eventual Consistency][PoEC]
+Here's an implementation of an epidemic register from Burckhardt's [Principles
+of Eventual Consistency][PoEC] (Fig 1.2, p14), in pseudocode:
 
 ```
 protocol EpidemicRegister {
