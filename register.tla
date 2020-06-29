@@ -1,6 +1,4 @@
 ---- MODULE register ----
-EXTENDS TLC
-
 CONSTANT Values
 
 VARIABLES method, value, return
