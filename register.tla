@@ -1,7 +1,7 @@
 ---- MODULE register ----
 CONSTANT Values
 
-VARIABLES method, value, return
+VARIABLES method, value, rval
 
 Methods == {"read", "write"}
 
@@ -11,21 +11,21 @@ NIL == CHOOSE NIL: NIL \notin (Values \cup Methods)
 
 Init == /\ method = NIL
         /\ value = NIL
-        /\ return = NIL
+        /\ rval = NIL
 
 Read == /\ method' = "read"
-        /\ return' = value
+        /\ rval' = value
         /\ UNCHANGED value
 
 Write(x) == /\ method' = "write"
             /\ value' = x
-            /\ return' = "ok"
+            /\ rval' = "ok"
 
 Next == \/ Read
         \/ \E v \in Values : Write(v)
 
 TypeOK == /\ method \in Methods \cup { NIL }
           /\ value \in Values \cup { NIL }
-          /\ return \in Values \cup { "ok", NIL }
+          /\ rval \in Values \cup { "ok", NIL }
 
 ====
