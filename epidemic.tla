@@ -64,7 +64,7 @@ variables
     seq = 0;
 
 begin
-\* Each time it's going to randomly choose whether to read, write, send, receive, or do nothing
+\* On each iteration: read, write, send a message, or receive a message
 
 loop: while steps > 0 do 
       steps := steps - 1;
@@ -84,7 +84,7 @@ end process
 
 fair process Serialize = 0
 variables
-    method = undef;
+    op = undef;
     value = undef;
     evt = undef;
 
@@ -99,15 +99,14 @@ next:  evt := CHOOSE h \in history :
                 \/ /\ h.t = x.t 
                    /\ h.pid = x.pid 
                    /\ h.seq < x.seq;
-       method := evt.op;
+       op := evt.op;
        value := evt.val;
        history := history \ {evt};
 end while;
 end process
 
 end algorithm; *)
-\* BEGIN TRANSLATION - the hash of the PCal code: PCal-8556b2644d1a7fd6cb8a043d4b03dd33
-\* Process variable method of process Role at line 60 col 5 changed to method_
+\* BEGIN TRANSLATION - the hash of the PCal code: PCal-183d7fca93b3623e821a6333e042517b
 VARIABLES steps, messages, history, pc
 
 (* define statement *)
@@ -119,10 +118,10 @@ lessthan(t1, t2) == LET n1 == t1.number
                         pid2 == t2.pid
                     IN (n1 < n2) \/ (n1=n2 /\ pid1<pid2)
 
-VARIABLES method_, current, written, rval, seq, method, value, evt
+VARIABLES method, current, written, rval, seq, op, value, evt
 
-vars == << steps, messages, history, pc, method_, current, written, rval, seq, 
-           method, value, evt >>
+vars == << steps, messages, history, pc, method, current, written, rval, seq, 
+           op, value, evt >>
 
 ProcSet == (Roles) \cup {0}
 
@@ -131,13 +130,13 @@ Init == (* Global variables *)
         /\ messages = {}
         /\ history = {}
         (* Process Role *)
-        /\ method_ = [self \in Roles |-> undef]
+        /\ method = [self \in Roles |-> undef]
         /\ current = [self \in Roles |-> undef]
         /\ written = [self \in Roles |-> Timestamp(0, self)]
         /\ rval = [self \in Roles |-> undef]
         /\ seq = [self \in Roles |-> 0]
         (* Process Serialize *)
-        /\ method = undef
+        /\ op = undef
         /\ value = undef
         /\ evt = undef
         /\ pc = [self \in ProcSet |-> CASE self \in Roles -> "loop"
@@ -146,23 +145,23 @@ Init == (* Global variables *)
 loop(self) == /\ pc[self] = "loop"
               /\ IF steps > 0
                     THEN /\ steps' = steps - 1
-                         /\ \/ /\ method_' = [method_ EXCEPT ![self] = "read"]
+                         /\ \/ /\ method' = [method EXCEPT ![self] = "read"]
                                /\ rval' = [rval EXCEPT ![self] = current[self]]
                                /\ seq' = [seq EXCEPT ![self] = seq[self] + 1]
-                               /\ history' = (history \union {[op|->method_'[self], val|->rval'[self],t|->written[self].number, pid|->self, seq|->seq'[self]]})
+                               /\ history' = (history \union {[op|->method'[self], val|->rval'[self],t|->written[self].number, pid|->self, seq|->seq'[self]]})
                                /\ UNCHANGED <<messages, current, written>>
                             \/ /\ \E v \in Values:
-                                    /\ method_' = [method_ EXCEPT ![self] = "write"]
+                                    /\ method' = [method EXCEPT ![self] = "write"]
                                     /\ current' = [current EXCEPT ![self] = v]
                                     /\ written' = [written EXCEPT ![self] = [written[self] EXCEPT !.number = @+1]]
                                     /\ rval' = [rval EXCEPT ![self] = "ok"]
-                                    /\ history' = (history \union {[op|->method_'[self], val|->v,t|->written'[self].number, pid|->self, seq|->seq[self]]})
+                                    /\ history' = (history \union {[op|->method'[self], val|->v,t|->written'[self].number, pid|->self, seq|->seq[self]]})
                                /\ UNCHANGED <<messages, seq>>
-                            \/ /\ method_' = [method_ EXCEPT ![self] = "send"]
+                            \/ /\ method' = [method EXCEPT ![self] = "send"]
                                /\ messages' = (messages \union {Latest(current[self], written[self])})
                                /\ UNCHANGED <<history, current, written, rval, seq>>
                             \/ /\ \E m \in messages:
-                                    /\ method_' = [method_ EXCEPT ![self] = "receive"]
+                                    /\ method' = [method EXCEPT ![self] = "receive"]
                                     /\ IF lessthan(written[self], (m.t))
                                           THEN /\ current' = [current EXCEPT ![self] = m.val]
                                                /\ written' = [written EXCEPT ![self] = m.t]
@@ -171,27 +170,27 @@ loop(self) == /\ pc[self] = "loop"
                                                                written >>
                                /\ UNCHANGED <<messages, history, rval, seq>>
                             \/ /\ TRUE
-                               /\ UNCHANGED <<messages, history, method_, current, written, rval, seq>>
+                               /\ UNCHANGED <<messages, history, method, current, written, rval, seq>>
                          /\ pc' = [pc EXCEPT ![self] = "loop"]
                     ELSE /\ pc' = [pc EXCEPT ![self] = "Done"]
-                         /\ UNCHANGED << steps, messages, history, method_, 
+                         /\ UNCHANGED << steps, messages, history, method, 
                                          current, written, rval, seq >>
-              /\ UNCHANGED << method, value, evt >>
+              /\ UNCHANGED << op, value, evt >>
 
 Role(self) == loop(self)
 
 guard == /\ pc[0] = "guard"
          /\ steps = 0
          /\ pc' = [pc EXCEPT ![0] = "sloop"]
-         /\ UNCHANGED << steps, messages, history, method_, current, written, 
-                         rval, seq, method, value, evt >>
+         /\ UNCHANGED << steps, messages, history, method, current, written, 
+                         rval, seq, op, value, evt >>
 
 sloop == /\ pc[0] = "sloop"
          /\ IF history /= {}
                THEN /\ pc' = [pc EXCEPT ![0] = "next"]
                ELSE /\ pc' = [pc EXCEPT ![0] = "Done"]
-         /\ UNCHANGED << steps, messages, history, method_, current, written, 
-                         rval, seq, method, value, evt >>
+         /\ UNCHANGED << steps, messages, history, method, current, written, 
+                         rval, seq, op, value, evt >>
 
 next == /\ pc[0] = "next"
         /\ evt' = (  CHOOSE h \in history :
@@ -202,11 +201,11 @@ next == /\ pc[0] = "next"
                        \/ /\ h.t = x.t
                           /\ h.pid = x.pid
                           /\ h.seq < x.seq)
-        /\ method' = evt'.op
+        /\ op' = evt'.op
         /\ value' = evt'.val
         /\ history' = history \ {evt'}
         /\ pc' = [pc EXCEPT ![0] = "sloop"]
-        /\ UNCHANGED << steps, messages, method_, current, written, rval, seq >>
+        /\ UNCHANGED << steps, messages, method, current, written, rval, seq >>
 
 Serialize == guard \/ sloop \/ next
 
@@ -224,7 +223,7 @@ Spec == /\ Init /\ [][Next]_vars
 
 Termination == <>(\A self \in ProcSet: pc[self] = "Done")
 
-\* END TRANSLATION - the hash of the generated TLA code (remove to silence divergence warnings): TLA-8c9914c0979893cc5aadf3737da7eb23
+\* END TRANSLATION - the hash of the generated TLA code (remove to silence divergence warnings): TLA-255a372d98ce3ac2e2200346cfc93efc
 
 
 ====
