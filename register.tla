@@ -8,11 +8,11 @@ VARIABLES method, value, return
 Methods == {"read", "write"}
 
 
-NIL == CHOOSE NIL: NIL \notin (Values \union Methods)
+NIL == CHOOSE NIL: NIL \notin (Values \cup Methods)
 
 
 Init == /\ method = NIL
-        /\ value = NUL
+        /\ value = NIL
         /\ return = NIL
 
 Read == /\ method' = "read"
@@ -26,8 +26,8 @@ Write(x) == /\ method' = "write"
 Next == \/ Read
         \/ \E v \in Values : Write(v)
 
-TypeOk == /\ method \in Methods \union { NIL }
-          /\ value \in Values \union { NIL }
-          /\ return \in Values \union { NIL }
+TypeOK == /\ method \in Methods \cup { NIL }
+          /\ value \in Values \cup { NIL }
+          /\ return \in Values \cup { "ok", NIL }
 
 ====
