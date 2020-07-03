@@ -223,6 +223,6 @@ Termination == <>(\A self \in ProcSet: pc[self] = "Done")
 
 \* END TRANSLATION - the hash of the generated TLA code (remove to silence divergence warnings): TLA-2369b331153387902ffff5fe6a475d5f
 
-R == INSTANCE register WITH NIL<-undef
+R == INSTANCE register
 
 ====

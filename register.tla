@@ -1,12 +1,13 @@
 ---- MODULE register ----
-CONSTANTS Values, NIL
+CONSTANT Values
 
 VARIABLES method, value, rval
 
 Methods == {"read", "write"}
 
 
-ASSUME NIL \notin (Values \cup Methods)
+NIL == CHOOSE NIL : NIL \notin (Values \cup Methods)
+
 
 
 Init == /\ method = NIL
