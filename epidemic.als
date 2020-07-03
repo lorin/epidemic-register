@@ -1,3 +1,5 @@
+open util/ordering[Role]
+
 sig Value {}
 
 sig Event {}
@@ -6,34 +8,26 @@ sig undef {}
 
 sig Role {}
 
-sig Message {}
+sig Timestamp {
+    , number : Int
+    , pid: Role
+}
+
+pred lessthan(t1, t2 : Timestamp) {
+    t1.number < t2.number or {
+        t1.number = t2.number
+        lt[t1.pid, t2.pid]
+    }
+}
+
+sig Message {
+    , val: Value
+    , t: Timestamp
+}
 
 sig State {}
 
 sig Process {}
-
-/**
- * Concrete executions are defined on p87
- */
-one sig ConcreteExecution {
-    , E: set Event
-    , eo: Event -> Event
-    , tr_: Event -> Transition
-    , role: Event -> Role
-    , del: Event -> Event
-} {
-  // c4: events for each role are a trajectory
-  all r : Role | some t : Trajectory | {
-      t._E = role.r
-      t._eo in eo
-      t._tr in tr_
-  }
-
-  // c6: 
-  all e : E | lone del.e // injective
-  all s,r : E | s->r in del => s->r in eo and rcv[r] in snd[s]
-
-}
 
 abstract sig Transition {
     , _op: Operation+undef
@@ -85,6 +79,7 @@ sig Trajectory {
     // A trajectory is well-formed if each event is preceded by no more returns than calls
     // We enforce well-formedness here
     all e : _E | #{r : returns[_E] | r->e in _eo or r=e} <= #{c : calls[_E] | c->e in _eo or c=e}
+
 }
 
 fun tr[e: Event] : Transition {
@@ -108,14 +103,6 @@ fun post[e : Event] : State {
 }
 
 
-fun rcv[e : Event] : Message {
-    tr[e]._rcv
-}
-
-fun snd[e : Event] : set Message {
-    tr[e]._snd
-}
-
 fun calls[E : set Event] : set Event {
     {e: E | no op[e] & undef}
 }
@@ -131,5 +118,39 @@ fun returns[E : set Event] : set Event {
 fun pred_[E: set Event, eo: Event->Event, e: Event] : Event+undef {
     eo.e & E
 }
+
+fun rcv[e : Event] : Message {
+    tr[e]._rcv
+}
+
+fun snd[e : Event] : set Message {
+    tr[e]._snd
+}
+
+
+/**
+ * Concrete executions are defined on p87
+ */
+one sig ConcreteExecution {
+    , E: set Event
+    , eo: Event -> Event
+    , tr_: Event -> Transition
+    , role: Event -> Role
+    , del: Event -> Event
+} {
+  // c4: events for each role are a trajectory
+  all r : Role | some t : Trajectory | {
+      t._E = role.r
+      t._eo in eo
+      t._tr in tr_
+
+  }
+
+  // c6: 
+  all e : E | lone del.e // injective
+  all s,r : E | (s->r in del) => (s->r in eo) and (rcv[r] in snd[s])
+}
+
+
 
 run {} for 3
