@@ -13,7 +13,7 @@ sig State {}
 sig Process {}
 
 /**
- * Concrete executions are defined on p86
+ * Concrete executions are defined on p87
  */
 one sig ConcreteExecution {
     , E: set Event
@@ -22,6 +22,13 @@ one sig ConcreteExecution {
     , role: Event -> Role
     , del: Event -> Event
 } {
+  // c4: events for each role are a trajectory
+  all r : Role | some t : Trajectory | {
+      t._E = role.r
+      t._eo in eo
+      t._tr in tr_
+  }
+
   // c6: 
   all e : E | lone del.e // injective
   all s,r : E | s->r in del => s->r in eo and rcv[r] in snd[s]
