@@ -23,8 +23,8 @@ sig Message {}
 
 abstract sig Transition {
     , _op: Operation+undef
-    , _rcv: Message
-    , _proc: Process
+    , _rcv: Message+undef
+    , _proc: Process+undef
     , _pre: State+undef
     , _post: State
     , _snd: set Message
@@ -70,6 +70,14 @@ sig rcv extends Transition {
     , sigma: State
     , sigmaP: State
     , M : set Message
+} {
+    _op = undef
+    _rcv = m
+    _proc = undef
+    _pre = sigma
+    _post = sigmaP
+    _snd = Message
+    _rval = undef
 }
 
 sig step extends Transition {
@@ -77,14 +85,30 @@ sig step extends Transition {
     , sigma: State
     , sigmaP: State
     , M : set Message
+}{
+    _op = undef
+    _rcv = undef
+    _proc = p
+    _pre = sigma
+    _post = sigmaP
+    _snd = Message
+    _rval = undef
 }
 
 sig callret extends Transition {
-    , op: Operation
+    , o: Operation
     , sigma: State
     , sigmaP: State
     , M : set Message
     , v : Value
+} {
+    _op = o
+    _rcv = undef
+    _proc = undef
+    _pre = sigma
+    _post = sigmaP
+    _snd = Message
+    _rval = v
 }
 
 sig rcvret extends Transition {
@@ -93,6 +117,14 @@ sig rcvret extends Transition {
     , sigmaP: State
     , M : set Message
     , v : Value
+} {
+    _op = undef
+    _rcv = m
+    _proc = undef
+    _pre = sigma
+    _post = sigmaP
+    _snd = Message
+    _rval = v
 }
 
 sig stepret extends Transition {
@@ -101,6 +133,14 @@ sig stepret extends Transition {
     , sigmaP: State
     , M : set Message
     , v : Value
+} {
+    _op = undef
+    _rcv = undef
+    _proc = p
+    _pre = sigma
+    _post = sigmaP
+    _snd = Message
+    _rval = v
 }
 
 
