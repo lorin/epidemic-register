@@ -17,7 +17,8 @@ sig Process {}
  */
 one sig ConcreteExecution {
     , E: set Event
-    , tr_: Transition
+    , eo: Event -> Event
+    , tr_: Event -> Transition
     , role: Event -> Role
     , del: Event -> Event
 } {
@@ -28,13 +29,13 @@ one sig ConcreteExecution {
 }
 
 abstract sig Transition {
-    , _op: Operation
+    , _op: Operation+undef
     , _rcv: Message
     , _proc: Process
     , _pre: State+undef
     , _post: State
     , _snd: set Message
-    , _rval: Value
+    , _rval: Value+undef
 } {}
 
 sig Operation {}
@@ -45,54 +46,49 @@ sig init, call, rcv, step, callret, rcvret, stepret extends Transition {}
  * Trajectories are defined on p86
  */
 sig Trajectory {
-  , E : set Event
-  , eo: Event -> Event
+  , _E : set Event
+  , _eo: Event -> Event
   , _tr: Event -> Transition // t2
 } {
 
     // t1: eo is an enumeration (total order) of E
    
-    no iden & eo // irreflexive 
-    no eo & ~eo // anti-symmetric
-    all e1, e2 : E | e1!=e2 => e1->e2 in eo or e2->e1 in eo // all elements
+    no iden & _eo // irreflexive 
+    no _eo & ~_eo // anti-symmetric
+    all e1, e2 : _E | e1!=e2 => e1->e2 in _eo or e2->e1 in _eo // all elements
 
 
     // t3: The first (and only the first) transition is an initialization transition, 
     // and the pre-state of each transition matches the post-state of the previous transition
-    some e : E | {
+    some e : _E | {
         e.tr._pre = undef
-        pred_[E, eo, e] = undef
+        pred_[_E, _eo, e] = undef
 
-    } or pre[e] = post[pred_[E, eo, e]] 
+    } or pre[e] = post[pred_[_E, _eo, e]] 
 
     // t4: A call transition may not follow another call transition unless there is a return transition in between them:
-    all c1, c2 : calls[E] | 
-        (c1 -> c2) in eo => some r : returns[E] | {
-            (c1 -> r) in eo or c1=r
-            (r -> c2) in eo
+    all c1, c2 : calls[_E] | 
+        (c1 -> c2) in _eo => some r : returns[_E] | {
+            (c1 -> r) in _eo or c1=r
+            (r -> c2) in _eo
         }
 
 
     // Definition 7.4:
     // A trajectory is well-formed if each event is preceded by no more returns than calls
     // We enforce well-formedness here
-    all e : E | #{r : returns[E] | r->e in eo or r=e} <= #{c : calls[E] | c->e in eo or c=e}
-
-
-
+    all e : _E | #{r : returns[_E] | r->e in _eo or r=e} <= #{c : calls[_E] | c->e in _eo or c=e}
 }
 
 fun tr[e: Event] : Transition {
-    let traj = E.e | traj._tr[e]
+    ConcreteExecution.tr_[e]
 }
 
-
-
-fun op[e :Event] : Operation {
+fun op[e :Event] : Operation+undef{
     tr[e]._op
 }
 
-fun rval[e: Event]: Value {
+fun rval[e: Event]: Value+undef {
     tr[e]._rval
 }
 
