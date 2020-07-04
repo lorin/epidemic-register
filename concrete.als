@@ -222,10 +222,11 @@ fun snd[e : Event] : set Message {
 one sig Execution {
     , E: set Event
     , eo: Event -> Event
-    , tr_: Event -> Transition
-    , role: Event -> Role
+    , tr_: Event one -> one Transition
+    , role: Event -> one Role
     , del: Event -> Event
 } {
+
   // c4: events for each role are a trajectory
   all r : Role | some t : Trajectory | {
       t._E = role.r
