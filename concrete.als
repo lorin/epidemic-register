@@ -5,15 +5,16 @@ Concrete executions
 From Principles of Eventual Conistency by Sebastian Burckhardt
 
 */
+
 open util/ordering[Role]
 
-sig Value {}
+abstract sig Value {}
 
-sig Event {}
+abstract sig Event {}
 
 one sig undef {}
 
-sig Role {}
+abstract sig Role {}
 
 abstract sig State {}
 
@@ -142,12 +143,11 @@ abstract sig stepret extends NonInitialTransition {
 /**
  * Trajectories are defined on p86
  */
-sig Trajectory {
+abstract sig Trajectory {
   , _E : set Event
   , _eo: Event -> Event
   , _tr: Event -> one Transition // t2
 } {
-
     //  domain of _tr must be _E
     _tr.Transition in _E
 
@@ -180,7 +180,6 @@ sig Trajectory {
     // A trajectory is well-formed if each event is preceded by no more returns than calls
     // We enforce well-formedness here
     all e : _E | #{r : returns[_E] | r->e in _eo or r=e} <= #{c : calls[_E] | c->e in _eo or c=e}
-
 }
 
 fun tr[e: Event] : Transition {
