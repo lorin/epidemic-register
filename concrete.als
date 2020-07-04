@@ -243,6 +243,14 @@ one sig Execution {
 
     // All events are in the concrete execution
     Event in E
+
+    // All events are associated with a role
+    E in role.Role
+
+    // Each role's events are associated with a trajectory
+    all r : Role | some t : Trajectory | {
+        t._E = role.r
+    }
     
     // c4: events for each role form a trajectory
     all t : Trajectory | some r: Role {
