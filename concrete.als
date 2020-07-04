@@ -11,7 +11,7 @@ sig Value {}
 
 sig Event {}
 
-sig undef {}
+one sig undef {}
 
 sig Role {}
 
@@ -247,8 +247,11 @@ one sig ConcreteExecution {
 
   }
 
-  // c6: 
+  // c5: 
   all e : E | lone del.e // injective
   all s,r : E | (s->r in del) => (s->r in eo) and (rcv[r] in snd[s])
-}
 
+
+// There is at least one initialization transition in each role
+  all r : Role | some init & tr[role.r]
+}

@@ -17,5 +17,37 @@ sig ERMessage  extends Message {
     , t: Timestamp
 }
 
+sig ERState extends State {
+    , current: Value
+    , written: Timestamp
+}
+
+// Protocols, p102
+sig Read,Write extends Operation {}
+
+sig read extends callret {} {
+    o = Read
+    sigmaP = sigma
+    no M
+    v = sigma.current
+}
+
+fun lookupRole[t : Transition] : Role {
+    let c = ConcreteExecution, e = (c.tr_).t | (c.role)[e]
+}
+
+one sig ok extends Value {}
+
+sig write extends callret {
+    arg : Value
+} {
+    o = Write
+    sigmaP.current = arg
+    sigmaP.written.number = sigma.written.number+1
+    sigmaP.written.pid = lookupRole[this]
+    no M
+    v = ok
+}
+
 
 run {} for 3
