@@ -12,9 +12,10 @@ pred lessthan(t1, t2 : Timestamp) {
     }
 }
 
-sig ERMessage  extends Message {
-    , val: Value
-    , t: Timestamp
+
+sig Latest extends Message {
+    , val : Value
+    , t : Timestamp
 }
 
 sig ERState extends State {
@@ -27,11 +28,12 @@ sig Read,Write extends Operation {}
 
 sig read extends callret {} {
     o = Read
-    sigmaP = sigma
-    no M
-    v = sigma.current
+    concrete/callret.sigmaP = sigma
+    no concrete/callret.M
+    concrete/callret.v = sigma.current
 }
 
+// Helper function to get role from transition
 fun lookupRole[t : Transition] : Role {
     let c = ConcreteExecution, e = (c.tr_).t | (c.role)[e]
 }
@@ -45,9 +47,27 @@ sig write extends callret {
     sigmaP.current = arg
     sigmaP.written.number = sigma.written.number+1
     sigmaP.written.pid = lookupRole[this]
-    no M
+    no concrete/callret.M
     v = ok
 }
 
+sig Periodically extends Process {}
+
+sig periodically extends step {} {
+    p = Periodically
+    concrete/step.sigmaP = sigma
+    concrete/step.M.val = sigma.current
+    (Latest & concrete/step.M).t = sigma.written
+}
+
+sig receive extends rcv {
+    , val: Value
+    , ts: Timestamp
+} {
+    lessthan[sigma.written, ts] => {
+        sigmaP.current = val
+        sigmaP.written = ts
+    }
+}
 
 run {} for 3
