@@ -18,7 +18,7 @@ pred lessthan(t1, t2 : Timestamp) {
 
 
 sig Latest extends Message {
-    , val : Value
+    , val : this/Value
     , t : Timestamp
 }
 
@@ -27,7 +27,7 @@ fact "Don't forge messages" {
 }
 
 sig State extends c/State {
-    , current: Value+undef
+    , current: this/Value+undef
     , written: Timestamp
 }
 
@@ -54,15 +54,17 @@ fun lookupRole[t : Transition] : this/Role {
     let ex = Execution, e = (ex.tr_).t | (ex.role)[e]
 }
 
-sig ok extends Value {}
+sig Value extends c/Value {}
+one sig ok extends c/Value {}
 
 
 sig write extends callret {
-    arg : Value
+    arg : this/Value
 } {
     o = Write
     sigma'.current = arg
 
+    // TODO: Figure out why this is giving me trouble
     sigma'.written.number = sigma.written.number.add[1]
 
     sigma'.written.pid = lookupRole[this]
@@ -81,7 +83,7 @@ sig periodically extends step {} {
 }
 
 sig rcv extends c/rcv {
-    , val: Value
+    , val: this/Value
     , ts: Timestamp
 } {
     no M
@@ -99,6 +101,7 @@ fact {
     c/Transition in this/init+read+write+periodically+this/rcv
 }
 
-run {some write } for 1 but 2 Transition, 2 this/Event, 3 this/State
+
+run {some write } for 1 but 2 Transition, 2 this/Event, 2 this/State, 3 Timestamp, 2 this/Value
 
 //run { } for 4 but 1 Execution, 2 Trajectory
