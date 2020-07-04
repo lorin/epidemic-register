@@ -19,23 +19,29 @@ sig Latest extends Message {
 }
 
 sig ERState extends State {
-    , current: Value
+    , current: Value+undef
     , written: Timestamp
 }
 
 // Protocols, p102
 sig Read,Write extends Operation {}
 
+sig init extends concrete/init {} {
+    sigmaP.current = undef
+    sigmaP.written.number = 0
+    sigmaP.written.pid = lookupRole[this]
+}
+
 sig read extends callret {} {
     o = Read
-    concrete/callret.sigmaP = sigma
-    no concrete/callret.M
-    concrete/callret.v = sigma.current
+    sigmaP = sigma
+    no M
+    v = sigma.current
 }
 
 // Helper function to get role from transition
 fun lookupRole[t : Transition] : Role {
-    let c = ConcreteExecution, e = (c.tr_).t | (c.role)[e]
+    let ex = Execution, e = (ex.tr_).t | (ex.role)[e]
 }
 
 one sig ok extends Value {}
@@ -47,7 +53,7 @@ sig write extends callret {
     sigmaP.current = arg
     sigmaP.written.number = sigma.written.number+1
     sigmaP.written.pid = lookupRole[this]
-    no concrete/callret.M
+    no M
     v = ok
 }
 
@@ -60,7 +66,7 @@ sig periodically extends step {} {
     M.t = sigma.written
 }
 
-sig receive extends rcv {
+sig rcv extends concrete/rcv {
     , val: Value
     , ts: Timestamp
 } {
@@ -69,5 +75,4 @@ sig receive extends rcv {
         sigmaP.written = ts
     }
 }
-
-run {} for 3
+run {} for 1

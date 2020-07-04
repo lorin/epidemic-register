@@ -15,11 +15,11 @@ one sig undef {}
 
 sig Role {}
 
-sig State {}
+abstract sig State {}
 
-sig Process {}
+abstract sig Process {}
 
-sig Message {}
+abstract sig Message {}
 
 abstract sig Transition {
     , _op: Operation+undef
@@ -29,17 +29,22 @@ abstract sig Transition {
     , _post: State
     , _snd: set Message
     , _rval: Value+undef
+
+    , sigmaP : State
+    , M : set Message
 } {}
 
-sig Operation {}
+abstract sig NonInitialTransition extends Transition {
+    , sigma : State
+}
+
+abstract sig Operation {}
 
 //
 // See definition 7.2, p85
 //
 
-sig init extends Transition {
-    , sigmaP : State
-    , M : set Message
+abstract sig init extends Transition {
 } {
     _op = undef
     _rcv = undef
@@ -50,11 +55,8 @@ sig init extends Transition {
     _rval = undef
 }
 
-sig call extends Transition {
+abstract sig call extends NonInitialTransition {
     , o: Operation
-    , sigma: State
-    , sigmaP: State
-    , M : set Message
 } {
     _op = o
     _rcv = undef
@@ -65,11 +67,8 @@ sig call extends Transition {
     _rval = undef
 }
 
-sig rcv extends Transition {
+abstract sig rcv extends NonInitialTransition {
     , m : Message
-    , sigma: State
-    , sigmaP: State
-    , M : set Message
 } {
     _op = undef
     _rcv = m
@@ -80,11 +79,8 @@ sig rcv extends Transition {
     _rval = undef
 }
 
-sig step extends Transition {
+abstract sig step extends NonInitialTransition {
     , p : Process
-    , sigma: State
-    , sigmaP: State
-    , M : set Message
 }{
     _op = undef
     _rcv = undef
@@ -95,11 +91,8 @@ sig step extends Transition {
     _rval = undef
 }
 
-sig callret extends Transition {
+abstract sig callret extends NonInitialTransition {
     , o: Operation
-    , sigma: State
-    , sigmaP: State
-    , M : set Message
     , v : Value
 } {
     _op = o
@@ -111,11 +104,8 @@ sig callret extends Transition {
     _rval = v
 }
 
-sig rcvret extends Transition {
+abstract sig rcvret extends NonInitialTransition {
     , m : Message
-    , sigma: State
-    , sigmaP: State
-    , M : set Message
     , v : Value
 } {
     _op = undef
@@ -127,11 +117,8 @@ sig rcvret extends Transition {
     _rval = v
 }
 
-sig stepret extends Transition {
+abstract sig stepret extends NonInitialTransition {
     , p : Process
-    , sigma: State
-    , sigmaP: State
-    , M : set Message
     , v : Value
 } {
     _op = undef
@@ -184,7 +171,7 @@ sig Trajectory {
 }
 
 fun tr[e: Event] : Transition {
-    ConcreteExecution.tr_[e]
+    Execution.tr_[e]
 }
 
 fun op[e :Event] : Operation+undef{
@@ -232,7 +219,7 @@ fun snd[e : Event] : set Message {
 /**
  * Concrete executions are defined on p87
  */
-one sig ConcreteExecution {
+one sig Execution {
     , E: set Event
     , eo: Event -> Event
     , tr_: Event -> Transition
