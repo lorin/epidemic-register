@@ -1,8 +1,12 @@
-open concrete
+open concrete as c
+
+sig Event extends c/Event {}
+
+sig Role extends c/Role {}
 
 sig Timestamp {
     , number : Int
-    , pid: Role
+    , pid: this/Role
 }
 
 pred lessthan(t1, t2 : Timestamp) {
@@ -19,10 +23,10 @@ sig Latest extends Message {
 }
 
 fact "Don't forge messages" {
-    concrete/dontforge[Latest]
+    c/dontforge[Latest]
 }
 
-sig ERState extends State {
+sig State extends c/State {
     , current: Value+undef
     , written: Timestamp
 }
@@ -31,7 +35,7 @@ sig ERState extends State {
 sig Read,Write extends Operation {}
 
 
-sig init extends concrete/init {} {
+sig init extends c/init {} {
     sigma'.current = undef
     sigma'.written.number = 0
     sigma'.written.pid = lookupRole[this]
@@ -46,7 +50,7 @@ sig read extends callret {} {
 }
 
 // Helper function to get role from transition
-fun lookupRole[t : Transition] : Role {
+fun lookupRole[t : Transition] : this/Role {
     let ex = Execution, e = (ex.tr_).t | (ex.role)[e]
 }
 
@@ -58,10 +62,13 @@ sig write extends callret {
 } {
     o = Write
     sigma'.current = arg
-    sigma'.written.number = sigma.written.number+1
+
+    sigma'.written.number = sigma.written.number.add[1]
+
     sigma'.written.pid = lookupRole[this]
     no M
     v = ok
+
 }
 
 sig Periodically extends Process {}
@@ -73,7 +80,7 @@ sig periodically extends step {} {
     M.t = sigma.written
 }
 
-sig rcv extends concrete/rcv {
+sig rcv extends c/rcv {
     , val: Value
     , ts: Timestamp
 } {
@@ -88,10 +95,10 @@ sig rcv extends concrete/rcv {
 
 
 fact {
-    // Only messages in this spec
-    concrete/Transition in this/init+read+write+periodically+this/rcv
+    // Only model transitions defined in this spec
+    c/Transition in this/init+read+write+periodically+this/rcv
 }
 
-//run {} for 1 but 2 Transition, 2 Event
+run {some write } for 1 but 2 Transition, 2 this/Event, 3 this/State
 
-run {some Trajectory } for 1 but 1 Execution, 1 Role
+//run { } for 4 but 1 Execution, 2 Trajectory
