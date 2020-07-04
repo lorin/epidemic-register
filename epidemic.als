@@ -55,9 +55,9 @@ sig Periodically extends Process {}
 
 sig periodically extends step {} {
     p = Periodically
-    concrete/step.sigmaP = sigma
-    concrete/step.M.val = sigma.current
-    (Latest & concrete/step.M).t = sigma.written
+    sigmaP = sigma
+    M.val = sigma.current
+    M.t = sigma.written
 }
 
 sig receive extends rcv {
