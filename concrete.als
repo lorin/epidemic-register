@@ -244,12 +244,11 @@ one sig Execution {
     // All events are in the concrete execution
     Event in E
     
-    // c4: events for each role are a trajectory
-    all r : Role | some t : Trajectory | {
+    // c4: events for each role form a trajectory
+    all t : Trajectory | some r: Role {
         t._E = role.r
-        // t._eo in eo
+        t._eo in eo
         t._tr in tr_
-
     }
 
     // Execution order constraints

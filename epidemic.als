@@ -94,4 +94,4 @@ fact {
 
 //run {} for 1 but 2 Transition, 2 Event
 
-run {} for 4 but 1 Execution, 1 Role
+run {some Trajectory } for 4 but 1 Execution, 1 Role
