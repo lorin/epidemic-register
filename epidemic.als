@@ -75,4 +75,9 @@ sig rcv extends concrete/rcv {
         sigmaP.written = ts
     }
 }
-run {} for 1
+
+fact {
+    // Only messages in this spec
+    concrete/Transition in this/init+read+write+periodically+this/rcv
+}
+run {} for 2 but 1 Role
