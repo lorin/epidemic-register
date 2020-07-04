@@ -21,6 +21,11 @@ abstract sig Process {}
 
 abstract sig Message {}
 
+fun lookupEvent[t : Transition[]] : Event {
+    Execution.del.(Execution.tr_.t)
+}
+
+
 abstract sig Transition {
     , _op: Operation+undef
     , _rcv: Message+undef
@@ -30,9 +35,14 @@ abstract sig Transition {
     , _snd: set Message
     , _rval: Value+undef
 
-    , sigmaP : State
+    , sigma' : State
     , M : set Message
-} {}
+} {
+
+    // I couldn't find this constraint in the book, but I added it.
+    // We don't allow delivery relations to occur if there's no rcv
+    _rcv in undef => no Execution.del.(lookupEvent[this])
+}
 
 abstract sig NonInitialTransition extends Transition {
     , sigma : State
@@ -50,7 +60,7 @@ abstract sig init extends Transition {
     _rcv = undef
     _proc = undef
     _pre = undef
-    _post = sigmaP
+    _post = sigma'
     _snd = M
     _rval = undef
 }
@@ -62,7 +72,7 @@ abstract sig call extends NonInitialTransition {
     _rcv = undef
     _proc = undef
     _pre = sigma
-    _post = sigmaP
+    _post = sigma'
     _snd = Message
     _rval = undef
 }
@@ -74,7 +84,7 @@ abstract sig rcv extends NonInitialTransition {
     _rcv = m
     _proc = undef
     _pre = sigma
-    _post = sigmaP
+    _post = sigma'
     _snd = Message
     _rval = undef
 }
@@ -86,7 +96,7 @@ abstract sig step extends NonInitialTransition {
     _rcv = undef
     _proc = p
     _pre = sigma
-    _post = sigmaP
+    _post = sigma'
     _snd = Message
     _rval = undef
 }
@@ -99,7 +109,7 @@ abstract sig callret extends NonInitialTransition {
     _rcv = undef
     _proc = undef
     _pre = sigma
-    _post = sigmaP
+    _post = sigma'
     _snd = Message
     _rval = v
 }
@@ -112,7 +122,7 @@ abstract sig rcvret extends NonInitialTransition {
     _rcv = m
     _proc = undef
     _pre = sigma
-    _post = sigmaP
+    _post = sigma'
     _snd = Message
     _rval = v
 }
@@ -125,7 +135,7 @@ abstract sig stepret extends NonInitialTransition {
     _rcv = undef
     _proc = p
     _pre = sigma
-    _post = sigmaP
+    _post = sigma'
     _snd = Message
     _rval = v
 }
@@ -190,7 +200,6 @@ fun post[e : Event] : State {
     tr[e]._post
 }
 
-
 fun calls[E : set Event] : set Event {
     {e: E | no op[e] & undef}
 }
@@ -207,11 +216,13 @@ fun pred_[E: set Event, eo: Event->Event, e: Event] : Event+undef {
     eo.e & E
 }
 
-fun rcv[e : Event] : Message {
+// Message received
+fun rcvd[e : Event] : Message {
     tr[e]._rcv
 }
 
-fun snd[e : Event] : set Message {
+// Messages sent
+fun snt[e : Event] : set Message {
     tr[e]._snd
 }
 
@@ -227,19 +238,29 @@ one sig Execution {
     , del: Event -> Event
 } {
 
-  // c4: events for each role are a trajectory
-  all r : Role | some t : Trajectory | {
-      t._E = role.r
-      t._eo in eo
-      t._tr in tr_
+    // All events are in the concrete execution
+    Event in E
+    
+    // c4: events for each role are a trajectory
+    all r : Role | some t : Trajectory | {
+        t._E = role.r
+        t._eo in eo
+        t._tr in tr_
 
-  }
+    }
 
-  // c5: 
-  all e : E | lone del.e // injective
-  all s,r : E | (s->r in del) => (s->r in eo) and (rcv[r] in snd[s])
+    // c5: 
+    all e : E | lone del.e // injective
+    all s,r : E | (s->r in del) => (s->r in eo) and (rcvd[r] in snt[s])
+  
 
 
 // There is at least one initialization transition in each role
   all r : Role | some init & tr[role.r]
+}
+
+
+// 8.3 p109
+pred dontforge[M : set Message] {
+    all e : Event | ( tr[e] in rcv && rcvd[e] in M) => some del.e
 }
