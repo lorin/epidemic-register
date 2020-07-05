@@ -72,7 +72,7 @@ abstract sig call extends NonInitialTransition {
     _proc = undef
     _pre = sigma
     _post = sigma'
-    _snd = Message
+    _snd = M
     _rval = undef
 }
 
@@ -84,7 +84,7 @@ abstract sig rcv extends NonInitialTransition {
     _proc = undef
     _pre = sigma
     _post = sigma'
-    _snd = Message
+    _snd = M
     _rval = undef
 }
 
@@ -96,20 +96,20 @@ abstract sig step extends NonInitialTransition {
     _proc = p
     _pre = sigma
     _post = sigma'
-    _snd = Message
+    _snd = M
     _rval = undef
 }
 
 abstract sig callret extends NonInitialTransition {
     , o: Operation
-    , v : Value
+    , v : Value+undef
 } {
     _op = o
     _rcv = undef
     _proc = undef
     _pre = sigma
     _post = sigma'
-    _snd = Message
+    _snd = M
     _rval = v
 }
 
@@ -122,7 +122,7 @@ abstract sig rcvret extends NonInitialTransition {
     _proc = undef
     _pre = sigma
     _post = sigma'
-    _snd = Message
+    _snd = M
     _rval = v
 }
 
@@ -135,7 +135,7 @@ abstract sig stepret extends NonInitialTransition {
     _proc = p
     _pre = sigma
     _post = sigma'
-    _snd = Message
+    _snd = M
     _rval = v
 }
 
