@@ -17,8 +17,13 @@ abstract sig Value {}
 abstract sig E {
     , role: one Role
     , eo: set E
-    , del: set E
+    , del: set E,
+
+    // Next element in the role
+    , next: lone E
 } {
+    let E' = role.~@role | // E' is events in the role
+        next = {s : E' | s in eo-this and no t : E' | ( (this->t) + (t->s)) in @eo}
 }
 
 /**
@@ -154,11 +159,10 @@ pred dontforge[M : set Message] {
 }
 
 
-
 // Predecessor based on event ordering.
 // We use `Pred` instead of `pred` because `pred` is a reserved keyword
 fun Pred[E': set E, eo: E->E, e: E] : lone E {
-     { p : E' | (p->e in eo) and no q : E' | (p->q) + (q->e) in eo}
+     { p : E' | (p->e in eo-iden) and no q : E' | (p->q) + (q->e) in eo}
 }
 
 

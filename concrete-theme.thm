@@ -3,54 +3,55 @@
 
 <view>
 
-<defaultnode visible="no"/>
+<projection> <type name="concrete/Role"/> </projection>
+
+<defaultnode/>
 
 <defaultedge/>
 
 <node>
-   <type name="Event"/>
    <type name="gossip"/>
    <type name="init"/>
    <type name="Int"/>
    <type name="Latest"/>
    <type name="ok"/>
-   <type name="Periodically"/>
-   <type name="rcv"/>
-   <type name="Read"/>
    <type name="read"/>
-   <type name="Role"/>
+   <type name="recv"/>
    <type name="State"/>
    <type name="String"/>
    <type name="Timestamp"/>
    <type name="univ"/>
-   <type name="Value"/>
-   <type name="Write"/>
    <type name="write"/>
-   <type name="c/call"/>
-   <type name="c/callret"/>
-   <type name="c/Event"/>
-   <type name="c/Execution"/>
-   <type name="c/init"/>
-   <type name="c/Message"/>
-   <type name="c/NonInitialTransition"/>
-   <type name="c/Operation"/>
-   <type name="c/Process"/>
-   <type name="c/rcv"/>
-   <type name="c/rcvret"/>
-   <type name="c/Role"/>
-   <type name="c/State"/>
-   <type name="c/step"/>
-   <type name="c/stepret"/>
-   <type name="c/Trajectory"/>
-   <type name="c/undef"/>
-   <type name="c/Value"/>
+   <type name="concrete/call"/>
+   <type name="concrete/callret"/>
+   <type name="concrete/E"/>
+   <type name="concrete/init"/>
+   <type name="concrete/Message"/>
+   <type name="concrete/rcvret"/>
+   <type name="concrete/recv"/>
+   <type name="concrete/Role"/>
+   <type name="concrete/State"/>
+   <type name="concrete/step"/>
+   <type name="concrete/stepret"/>
+   <type name="concrete/Transition"/>
+   <type name="concrete/Value"/>
    <type name="seq/Int"/>
-   <type name="c/ordering/Ord"/>
+   <type name="concrete/ordering/Ord"/>
+   <set name="First" type="concrete/ordering/Ord"/>
+   <set name="Next" type="concrete/ordering/Ord"/>
+   <set name="pid" type="Timestamp"/>
+   <set name="role" type="concrete/E"/>
 </node>
 
-<node visible="yes">
-   <type name="c/Transition"/>
+<node visible="no">
+   <type name="Value"/>
 </node>
+
+<edge visible="no" attribute="yes">
+   <relation name="number"> <type name="Timestamp"/> <type name="Int"/> </relation>
+   <relation name="val"> <type name="concrete/Message"/> <type name="Value"/> </relation>
+   <relation name="val"> <type name="concrete/recv"/> <type name="Value"/> </relation>
+</edge>
 
 </view>
 
