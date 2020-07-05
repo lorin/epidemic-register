@@ -38,15 +38,14 @@ abstract sig Transition {
 
     , sigma' : State
     , M : set Message
-//    , next : lone Transition
+    , next : lone Transition
 } {
-    // TODO: next
-
-    // successor relatinship
-   // next = let e = Execution.tr.this | 
-
-
-
+    let e = Execution.tr.this | next = { 
+        n : Event | {
+            e->n in Execution.eo
+            no m : Event | ((e->m)+(e->n)) in Execution.eo
+        }
+    }.(Execution.tr)
 }
 
 abstract sig NonInitialTransition extends Transition {
@@ -227,6 +226,7 @@ fun pred_[E: set Event, eo: Event->Event, e: Event] : Event+undef {
         }
     } | some result => result else undef
 }
+
 
 
 // Message received
