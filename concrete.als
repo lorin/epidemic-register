@@ -108,7 +108,7 @@ abstract sig callret extends Transition {
     rval = v
 }
 
-abstract sig rcvret extends Transition {
+abstract sig recvret extends Transition {
     , m : Message
     , v : Value
 } {

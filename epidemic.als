@@ -1,9 +1,16 @@
 open concrete
 
+sig Latest extends Message {
+    , val : this/Value
+    , t : Timestamp
+}
+
 sig Timestamp {
     , number : Int
     , pid: this/Role
 }
+
+sig R extends concrete/Role {} // Remove namespace from visualization
 
 sig Value extends concrete/Value {}
 one sig ok extends concrete/Value {}
@@ -14,11 +21,6 @@ pred lessthan(t1, t2 : Timestamp) {
         t1.number = t2.number
         lt[t1.pid, t2.pid]
     }
-}
-
-sig Latest extends Message {
-    , val : this/Value
-    , t : Timestamp
 }
 
 sig State extends concrete/State {
@@ -54,20 +56,19 @@ sig write extends callret {
     v = ok
 }
 
-sig gossip extends step {} {
+sig send extends step {} {
     post = pre
     M.val = pre.current
     M.t = pre.written
 }
 
 sig recv extends concrete/recv {
-    , val: this/Value
-    , ts: Timestamp
+    // m : Message <- defined in in concrete/recv
 } {
     no M
-    lessthan[pre.written, ts] => {
-        post.current = val
-        post.written = ts
+    lessthan[pre.written, m.t] => {
+        post.current = m.val
+        post.written = m.t
     } else {
         post=pre
     }
@@ -75,7 +76,7 @@ sig recv extends concrete/recv {
 
 fact {
     // Only allow model transitions defined in this spec
-    E in this/init+read+write+gossip+this/recv
+    E in this/init+read+write+send+this/recv
 
     // All roles must have associated events
     all r : Role | some role.r
@@ -83,8 +84,14 @@ fact {
     // Don't allow any undefined reads
     all e : read | some e.v
 
+   // Some messages
+   //some del
+
+   // Some reads
    some read
-   some del
+
+   // All roles have reads
+   //all r : Role | read in role.r
 }
 
 run {
