@@ -13,11 +13,21 @@ open util/relation
 
 abstract sig Value {}
 
-abstract sig Event {
+abstract sig E {
     , role: Role
-    , eo: set Event
+    , eo: set E
+    , del: set E
 } {
-    totalOrder[@eo, @Event]
+}
+
+fact {
+    totalOrder[eo, E]
+
+    // c5: 
+    injective[del, E]
+    all s,r : E | (s->r in del) => (s->r in eo) and rcv[r] in snd[s]
+
+
 }
 
 abstract sig Role {
@@ -28,7 +38,7 @@ abstract sig State {}
 
 abstract sig Message {}
 
-abstract sig Transition extends Event {
+abstract sig Transition extends E {
     , rcv: lone Message
     , pre: lone State
     , post: State
@@ -118,21 +128,20 @@ abstract sig stepret extends NonInitialTransition {
 /**
  * Trajectories are defined on p86
  */
-pred isTrajectory[E: set Event, eo: Event->Event] {
+pred isTrajectory[E': set E, eo: E->E] {
     // t3: The first (and only the first) transition is an initialization transition, 
     // and the pre-state of each transition matches the post-state of the previous transition
-    all e : E | {
+    all e : E' | {
         no pre[e]
-        no Pred[E, eo, e]
-    } or pre[e] = post[Pred[E, eo, e]]
+        no Pred[E', eo, e]
+    } or pre[e] = post[Pred[E', eo, e]]
 
 }
 
 // Predecessor based on event ordering.
 // We use `Pred` instead of `pred` because `pred` is a reserved keyword
-fun Pred[E: set Event, eo: Event->Event, e: Event] : lone Event {
-    // Restrict to subset of events we care about
-    let eo' = eo & (E->E) | { p : E | (p->e in eo') and no q : E | (p->q) + (q->e) in eo'}
+fun Pred[E': set E, eo: E->E, e: E] : lone E {
+     { p : E' | (p->e in eo) and no q : E' | (p->q) + (q->e) in eo}
 }
 
 
