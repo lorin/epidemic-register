@@ -23,7 +23,7 @@ abstract sig Process {}
 abstract sig Message {}
 
 fun lookupEvent[t : Transition[]] : Event {
-    Execution.del.(Execution.tr_.t)
+    Execution.del.(Execution.tr.t)
 }
 
 
@@ -38,7 +38,13 @@ abstract sig Transition {
 
     , sigma' : State
     , M : set Message
+//    , next : lone Transition
 } {
+    // TODO: next
+
+    // successor relatinship
+   // next = let e = Execution.tr.this | 
+
 
 
 }
@@ -183,7 +189,7 @@ abstract sig Trajectory {
 }
 
 fun tr[e: Event] : Transition {
-    Execution.tr_[e]
+    Execution.tr[e]
 }
 
 fun op[e :Event] : Operation+undef{
@@ -215,8 +221,13 @@ fun returns[E : set Event] : set Event {
 // , or is undefined (⊥) if there is no predecessor
 // We call it pred_ here because `pred` is a reserved word
 fun pred_[E: set Event, eo: Event->Event, e: Event] : Event+undef {
-    let result = eo.e & E | some result => result else undef
+    let result = { p : E | {
+        p->e in eo 
+        no q : E | ((p->q) + (q->e)) in eo
+        }
+    } | some result => result else undef
 }
+
 
 // Message received
 fun rcvd[e : Event] : Message {
@@ -235,7 +246,7 @@ fun snt[e : Event] : set Message {
 one sig Execution {
     , E: set Event
     , eo: Event -> Event
-    , tr_: Event one -> one Transition
+    , tr: Event one -> one Transition
     , role: Event -> one Role
     , del: Event -> Event
 } {
@@ -255,7 +266,7 @@ one sig Execution {
     all t : Trajectory | some r: Role {
         t._E = role.r
         t._eo in eo
-        t._tr in tr_
+        t._tr in tr
     }
 
     // Execution order constraints
@@ -268,9 +279,9 @@ one sig Execution {
     all s,r : E | (s->r in del) => (s->r in eo) and (rcvd[r] in snt[s])
   
 
-
-// There is at least one initialization transition in each role
-  all r : Role | some init & tr[role.r]
+    // There is at least one initialization transition in each role
+    // Need to do this this.@ trick to disambiguate Execution.tr from the tr function
+    all r : Role | init in (role.r).(this.@tr)
 }
 
 
