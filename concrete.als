@@ -30,11 +30,11 @@ fun lookupEvent[t : Transition[]] : Event {
 abstract sig Transition {
     , op: Operation+undef
     , rcv: Message+undef
-    , _proc: Process+undef
-    , _pre: State+undef
-    , _post: State
-    , _snd: set Message
-    , _rval: Value+undef
+    , proc: Process+undef
+    , pre: State+undef
+    , post: State
+    , snd: set Message
+    , rval: Value+undef
 
     , sigma' : State
     , M : set Message
@@ -57,11 +57,11 @@ abstract sig init extends Transition {
 } {
     op = undef
     rcv = undef
-    _proc = undef
-    _pre = undef
-    _post = sigma'
-    _snd = M
-    _rval = undef
+    proc = undef
+    pre = undef
+    post = sigma'
+    snd = M
+    rval = undef
 }
 
 abstract sig call extends NonInitialTransition {
@@ -69,11 +69,11 @@ abstract sig call extends NonInitialTransition {
 } {
     op = o
     rcv = undef
-    _proc = undef
-    _pre = sigma
-    _post = sigma'
-    _snd = M
-    _rval = undef
+    proc = undef
+    pre = sigma
+    post = sigma'
+    snd = M
+    rval = undef
 }
 
 abstract sig rcv extends NonInitialTransition {
@@ -81,11 +81,11 @@ abstract sig rcv extends NonInitialTransition {
 } {
     op = undef
     rcv = m
-    _proc = undef
-    _pre = sigma
-    _post = sigma'
-    _snd = M
-    _rval = undef
+    proc = undef
+    pre = sigma
+    post = sigma'
+    snd = M
+    rval = undef
 }
 
 abstract sig step extends NonInitialTransition {
@@ -93,11 +93,11 @@ abstract sig step extends NonInitialTransition {
 }{
     op = undef
     rcv = undef
-    _proc = p
-    _pre = sigma
-    _post = sigma'
-    _snd = M
-    _rval = undef
+    proc = p
+    pre = sigma
+    post = sigma'
+    snd = M
+    rval = undef
 }
 
 abstract sig callret extends NonInitialTransition {
@@ -106,11 +106,11 @@ abstract sig callret extends NonInitialTransition {
 } {
     op = o
     rcv = undef
-    _proc = undef
-    _pre = sigma
-    _post = sigma'
-    _snd = M
-    _rval = v
+    proc = undef
+    pre = sigma
+    post = sigma'
+    snd = M
+    rval = v
 }
 
 abstract sig rcvret extends NonInitialTransition {
@@ -119,11 +119,11 @@ abstract sig rcvret extends NonInitialTransition {
 } {
     op = undef
     rcv = m
-    _proc = undef
-    _pre = sigma
-    _post = sigma'
-    _snd = M
-    _rval = v
+    proc = undef
+    pre = sigma
+    post = sigma'
+    snd = M
+    rval = v
 }
 
 abstract sig stepret extends NonInitialTransition {
@@ -132,11 +132,11 @@ abstract sig stepret extends NonInitialTransition {
 } {
     op = undef
     rcv = undef
-    _proc = p
-    _pre = sigma
-    _post = sigma'
-    _snd = M
-    _rval = v
+    proc = p
+    pre = sigma
+    post = sigma'
+    snd = M
+    rval = v
 }
 
 
@@ -191,15 +191,15 @@ fun op[e :Event] : Operation+undef{
 }
 
 fun rval[e: Event]: Value+undef {
-    tr[e]._rval
+    tr[e].rval
 }
 
 fun pre[e : Event] : State+undef {
-    tr[e]._pre
+    tr[e].pre
 }
 
 fun post[e : Event] : State {
-    tr[e]._post
+    tr[e].post
 }
 
 fun calls[E : set Event] : set Event {
@@ -225,7 +225,7 @@ fun rcvd[e : Event] : Message {
 
 // Messages sent
 fun snt[e : Event] : set Message {
-    tr[e]._snd
+    tr[e].snd
 }
 
 
