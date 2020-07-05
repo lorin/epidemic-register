@@ -9,13 +9,15 @@ From Principles of Eventual Conistency by Sebastian Burckhardt
 
 open util/ordering[Role]
 
-open util/relation as r
+open util/relation
 
 abstract sig Value {}
 
 abstract sig Event {
     , role: Role
     , eo: set Event
+} {
+    totalOrder[@eo, @Event]
 }
 
 abstract sig Role {
@@ -111,6 +113,26 @@ abstract sig stepret extends NonInitialTransition {
     post = sigma'
     snd = M
     rval = v
+}
+
+/**
+ * Trajectories are defined on p86
+ */
+pred isTrajectory[E: set Event, eo: Event->Event] {
+    // t3: The first (and only the first) transition is an initialization transition, 
+    // and the pre-state of each transition matches the post-state of the previous transition
+    all e : E | {
+        no pre[e]
+        no Pred[E, eo, e]
+    } or pre[e] = post[Pred[E, eo, e]]
+
+}
+
+// Predecessor based on event ordering.
+// We use `Pred` instead of `pred` because `pred` is a reserved keyword
+fun Pred[E: set Event, eo: Event->Event, e: Event] : lone Event {
+    // Restrict to subset of events we care about
+    let eo' = eo & (E->E) | { p : E | (p->e in eo') and no q : E | (p->q) + (q->e) in eo'}
 }
 
 
