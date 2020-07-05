@@ -85,7 +85,7 @@ fact {
     all e : read | some e.v
 
    // Some messages
-   //some del
+   some del
 
    // Some reads
    some read

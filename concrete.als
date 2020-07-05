@@ -40,7 +40,7 @@ fact "Concrete executions" {
     // Nothing to assert here, it's part of the sig
 
     // c4: the events for each role are a trajectory
-    all r : Role | isTrajectory[role.r, eo]
+    all r : Role | isTrajectory[r]
 
     // c5: 
     injective[del, E]
@@ -132,20 +132,20 @@ fact "All transitions have pre states except init" {
 /**
  * Trajectories are defined on p86
  */
-pred isTrajectory[E': set E, eo: E->E] {
+pred isTrajectory[r : Role] {
 
     // t1: eo is an enumeration (total order) of E'
-    totalOrder[eo, E']
+    totalOrder[eo, role.r]
 
     // t2: every event is associated with a transition
-    E' in Transition
+    role.r in Transition
 
     // t3: The first (and only the first) transition is an initialization transition, 
     // and the pre-state of each transition matches the post-state of the previous transition
-    all e : E' | {
+    all e : role.r | {
         no pre[e]
-        no Pred[E', eo, e]
-    } or pre[e] = post[Pred[E', eo, e]]
+        no next.e
+    } or pre[e] = post[next.e]
 
 
     // t4: A call transition may not follow another call transition unless there is a return transition in between them
@@ -160,10 +160,4 @@ pred isTrajectory[E': set E, eo: E->E] {
 // 8.3 p109
 pred dontforge[M : set Message] {
     all e : E | ((e in recv) && (rcv[e] in M)) => some del.e
-}
-
-// Predecessor based on event ordering.
-// We use `Pred` instead of `pred` because `pred` is a reserved keyword
-fun Pred[E': set E, eo: E->E, e: E] : lone E {
-     { p : E' | (p->e in eo-iden) and no q : E'-(p+e) | (p->q) + (q->e) in eo}
 }
