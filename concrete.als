@@ -28,7 +28,7 @@ fun lookupEvent[t : Transition[]] : Event {
 
 
 abstract sig Transition {
-    , _op: Operation+undef
+    , op: Operation+undef
     , _rcv: Message+undef
     , _proc: Process+undef
     , _pre: State+undef
@@ -55,7 +55,7 @@ abstract sig Operation {}
 
 abstract sig init extends Transition {
 } {
-    _op = undef
+    op = undef
     _rcv = undef
     _proc = undef
     _pre = undef
@@ -67,7 +67,7 @@ abstract sig init extends Transition {
 abstract sig call extends NonInitialTransition {
     , o: Operation
 } {
-    _op = o
+    op = o
     _rcv = undef
     _proc = undef
     _pre = sigma
@@ -79,7 +79,7 @@ abstract sig call extends NonInitialTransition {
 abstract sig rcv extends NonInitialTransition {
     , m : Message
 } {
-    _op = undef
+    op = undef
     _rcv = m
     _proc = undef
     _pre = sigma
@@ -91,7 +91,7 @@ abstract sig rcv extends NonInitialTransition {
 abstract sig step extends NonInitialTransition {
     , p : Process
 }{
-    _op = undef
+    op = undef
     _rcv = undef
     _proc = p
     _pre = sigma
@@ -104,7 +104,7 @@ abstract sig callret extends NonInitialTransition {
     , o: Operation
     , v : Value+undef
 } {
-    _op = o
+    op = o
     _rcv = undef
     _proc = undef
     _pre = sigma
@@ -117,7 +117,7 @@ abstract sig rcvret extends NonInitialTransition {
     , m : Message
     , v : Value
 } {
-    _op = undef
+    op = undef
     _rcv = m
     _proc = undef
     _pre = sigma
@@ -130,7 +130,7 @@ abstract sig stepret extends NonInitialTransition {
     , p : Process
     , v : Value
 } {
-    _op = undef
+    op = undef
     _rcv = undef
     _proc = p
     _pre = sigma
@@ -187,7 +187,7 @@ fun tr[e: Event] : Transition {
 }
 
 fun op[e :Event] : Operation+undef{
-    tr[e]._op
+    tr[e].op
 }
 
 fun rval[e: Event]: Value+undef {
