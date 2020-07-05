@@ -13,19 +13,35 @@ open util/relation
 
 abstract sig Value {}
 
+// Events. We use "E" here because it's shorter, and this is referenced often
 abstract sig E {
-    , role: Role
+    , role: one Role
     , eo: set E
     , del: set E
 } {
 }
 
-fact {
+/**
+ *  p87, Defintion 7.5
+ */ 
+fact "Concrete executions" {
+    // c1: eo is an anumeration of E
     totalOrder[eo, E]
+
+    // c2: every event is associated with a transition
+    E in Transition
+
+    // c3: every event is associated with a role.
+    // Nothing to assert here, it's part of the sig
+
+    // c4: the events for each role are a trajectory
+    all r : Role | isTrajectory[role.r, eo]
 
     // c5: 
     injective[del, E]
     all s,r : E | (s->r in del) => (s->r in eo) and rcv[r] in snd[s]
+
+
 }
 
 abstract sig Role {
