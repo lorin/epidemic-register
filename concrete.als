@@ -23,8 +23,12 @@ abstract sig E {
     , next: lone E
 } {
     let E' = role.~@role | // E' is events in the role
-        next = {s : E' | s in eo-this and no t : E' | ( (this->t) + (t->s)) in @eo}
+        next = {s : E' | s in eo-this and no t : E'-(this+s) | ( (this->t) + (t->s)) in @eo}
 }
+
+/*
+let E' = write.role.~role | {s : E' | s in write.eo-write and no t : E'-(s+write) | ( (write->t) + (t->s)) in eo}
+*/
 
 /**
  *  p87, Defintion 7.5
@@ -158,11 +162,10 @@ pred dontforge[M : set Message] {
     all e : E | ((e in recv) && (rcv[e] in M)) => some del.e
 }
 
-
 // Predecessor based on event ordering.
 // We use `Pred` instead of `pred` because `pred` is a reserved keyword
 fun Pred[E': set E, eo: E->E, e: E] : lone E {
-     { p : E' | (p->e in eo-iden) and no q : E' | (p->q) + (q->e) in eo}
+     { p : E' | (p->e in eo-iden) and no q : E'-(p+e) | (p->q) + (q->e) in eo}
 }
 
 

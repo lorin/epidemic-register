@@ -14,23 +14,19 @@
    <type name="init"/>
    <type name="Int"/>
    <type name="Latest"/>
-   <type name="ok"/>
    <type name="read"/>
    <type name="recv"/>
    <type name="State"/>
    <type name="String"/>
-   <type name="Timestamp"/>
    <type name="univ"/>
    <type name="write"/>
    <type name="concrete/call"/>
    <type name="concrete/callret"/>
    <type name="concrete/E"/>
    <type name="concrete/init"/>
-   <type name="concrete/Message"/>
    <type name="concrete/rcvret"/>
    <type name="concrete/recv"/>
    <type name="concrete/Role"/>
-   <type name="concrete/State"/>
    <type name="concrete/step"/>
    <type name="concrete/stepret"/>
    <type name="concrete/Transition"/>
@@ -44,11 +40,16 @@
 </node>
 
 <node visible="no">
+   <type name="ok"/>
+   <type name="Timestamp"/>
    <type name="Value"/>
+   <type name="concrete/Message"/>
+   <type name="concrete/State"/>
 </node>
 
 <edge visible="no" attribute="yes">
    <relation name="number"> <type name="Timestamp"/> <type name="Int"/> </relation>
+   <relation name="rval"> <type name="concrete/E"/> <type name="concrete/Value"/> </relation>
    <relation name="val"> <type name="concrete/Message"/> <type name="Value"/> </relation>
    <relation name="val"> <type name="concrete/recv"/> <type name="Value"/> </relation>
 </edge>
