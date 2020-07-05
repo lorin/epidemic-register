@@ -32,7 +32,7 @@ sig State extends c/State {
 }
 
 // Protocols, p102
-sig Read,Write extends Operation {}
+one sig Read,Write extends Operation {}
 
 
 sig init extends c/init {} {
@@ -46,7 +46,7 @@ sig read extends callret {} {
     o = Read
     sigma' = sigma
     no M
-    v = sigma.current
+    // v = sigma.current
 }
 
 // Helper function to get role from transition
@@ -64,7 +64,6 @@ sig write extends callret {
     o = Write
     sigma'.current = arg
 
-    // TODO: Figure out why this is giving me trouble
     sigma'.written.number = sigma.written.number.add[1]
 
     sigma'.written.pid = lookupRole[this]
@@ -75,7 +74,7 @@ sig write extends callret {
 
 sig Periodically extends Process {}
 
-sig periodically extends step {} {
+sig gossip extends step {} {
     p = Periodically
     sigma' = sigma
     M.val = sigma.current
@@ -97,11 +96,43 @@ sig rcv extends c/rcv {
 
 
 fact {
-    // Only model transitions defined in this spec
-    c/Transition in this/init+read+write+periodically+this/rcv
+    // Only allow model transitions defined in this spec
+    c/Transition in this/init+read+write+gossip+this/rcv
 }
 
+/*
 
-run {some write } for 1 but 2 Transition, 2 this/Event, 2 this/State, 3 Timestamp, 2 this/Value
+Cardinalities for model checking:
 
-//run { } for 4 but 1 Execution, 2 Trajectory
+Event: N
+Role: R<N (let's say R=2)
+Value: don't care (let's say 2)
+State: Max N-R (init is redundant)+1
+Process: 1 (process doesn't really do anything)
+Message: Same as State: max N-R
+Execution: 1
+Trajectory: R
+*/ 
+
+// 1 Role
+run { 
+    some this/read 
+    some this/write
+    } for 4 but 2 this/Value, 1 this/Role, 1 Process, 1 Execution, 1 Trajectory
+
+// run { } for 2 but 3 this/State, 4 Timestamp, 3 this/Value
+
+
+ run {some read } for 1 but 2 Transition, 2 this/Event, 2 this/State, 3 Timestamp, 2 this/Value, 2 Operation
+// run {some write } for 1 but 2 Transition, 2 this/Event, 2 this/State, 3 Timestamp, 2 this/Value
+
+/*
+
+run { 
+    some write
+//    some read
+//    some gossip 
+//    some this/rcv 
+    } for 4 but 1 Execution, 2 Trajectory
+
+*/
