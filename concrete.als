@@ -40,12 +40,15 @@ abstract sig Transition {
     , M : set Message
     , next : lone Transition
 } {
-    let e = Execution.tr.this | next = { 
-        n : Event | {
-            e->n in Execution.eo
-            no m : Event | ((e->m)+(e->n)) in Execution.eo
-        }
+    let e = Execution.tr.this | 
+    next = 
+    { n : Event | { (e->n in Execution.eo) and {no m : Event | ((e->m)+(m->n)) in Execution.eo }}
     }.(Execution.tr)
+    /*
+
+let e = Execution.tr.gossip | { n : this/Event | { (e->n in Execution.eo) and {no m : this/Event | ((e->m)+(e->n)) in Execution.eo }}}
+
+    */
 }
 
 abstract sig NonInitialTransition extends Transition {
@@ -149,42 +152,42 @@ abstract sig stepret extends NonInitialTransition {
  * Trajectories are defined on p86
  */
 abstract sig Trajectory {
-  , _E : set Event
-  , _eo: Event -> Event
-  , _tr: Event -> one Transition // t2
+  , E : set Event
+  , eo: Event -> Event
+  , tr: Event -> one Transition // t2
 } {
-    //  domain of _tr must be _E
-    _tr.Transition in _E
+    //  domain of tr must be E
+    tr.Transition in E
 
     // t1: eo is an enumeration (total order) of E
-    _eo in _E->_E
-    no iden & _eo // irreflexive 
-    no _eo & ~_eo // anti-symmetric
-    all e1, e2 : _E | e1!=e2 => (e1->e2 in _eo or (e2->e1 in _eo)) // all elements
+    eo in E->E
+    no iden & eo // irreflexive 
+    no eo & ~eo // anti-symmetric
+    all e1, e2 : E | e1!=e2 => (e1->e2 in eo or (e2->e1 in eo)) // all elements
 
 
 
     // t3: The first (and only the first) transition is an initialization transition, 
     // and the pre-state of each transition matches the post-state of the previous transition
 
-    all e : _E | {
+    all e : E | {
         // Initial state
         pre[e] = undef // no pre-state
-        pred_[_E, _eo, e] = undef // no predecessor
-    } or pre[e] = post[pred_[_E, _eo, e]]  // prestate is poststate of predecessor
+        pred_[E, eo, e] = undef // no predecessor
+    } or pre[e] = post[pred_[E, eo, e]]  // prestate is poststate of predecessor
 
     // t4: A call transition may not follow another call transition unless there is a return transition in between them:
-    all c1, c2 : calls[_E] | 
-        (c1 -> c2) in _eo => some r : returns[_E] | {
-            (c1 -> r) in _eo or c1=r
-            (r -> c2) in _eo
+    all c1, c2 : calls[E] | 
+        (c1 -> c2) in eo => some r : returns[E] | {
+            (c1 -> r) in eo or c1=r
+            (r -> c2) in eo
         }
 
 
     // Definition 7.4:
     // A trajectory is well-formed if each event is preceded by no more returns than calls
     // We enforce well-formedness here
-    all e : _E | #{r : returns[_E] | r->e in _eo or r=e} <= #{c : calls[_E] | c->e in _eo or c=e}
+    all e : E | #{r : returns[E] | r->e in eo or r=e} <= #{c : calls[E] | c->e in eo or c=e}
 }
 
 fun tr[e: Event] : Transition {
@@ -258,6 +261,7 @@ one sig Execution {
     E in role.Role
 
     // Each role's events are associated with a trajectory
+    /*
     all r : Role | some t : Trajectory | {
         t._E = role.r
     }
@@ -268,6 +272,7 @@ one sig Execution {
         t._eo in eo
         t._tr in tr
     }
+    */
 
     // Execution order constraints
     no iden & eo // irreflexive 
