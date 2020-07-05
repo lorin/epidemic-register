@@ -26,8 +26,6 @@ fact {
     // c5: 
     injective[del, E]
     all s,r : E | (s->r in del) => (s->r in eo) and rcv[r] in snd[s]
-
-
 }
 
 abstract sig Role {
@@ -75,7 +73,7 @@ abstract sig call extends NonInitialTransition {
     no rval
 }
 
-abstract sig rcv extends NonInitialTransition {
+abstract sig recv extends NonInitialTransition {
     , m : Message
 } {
     rcv = m
@@ -129,6 +127,13 @@ abstract sig stepret extends NonInitialTransition {
  * Trajectories are defined on p86
  */
 pred isTrajectory[E': set E, eo: E->E] {
+
+    // t1: eo is an enumeration (total order) of E'
+    totalOrder[eo, E']
+
+    // t2: every event is associated with a transition
+    E' in Transition
+
     // t3: The first (and only the first) transition is an initialization transition, 
     // and the pre-state of each transition matches the post-state of the previous transition
     all e : E' | {
@@ -136,7 +141,22 @@ pred isTrajectory[E': set E, eo: E->E] {
         no Pred[E', eo, e]
     } or pre[e] = post[Pred[E', eo, e]]
 
+
+    // t4: A call transition may not follow another call transition unless there is a return transition in between them
+    // Not modeling this for now because epidemic register calls all return immediately
+
+    // 7.4: Well-formed trajectories
+    // A trajectory (E,eo,tr) is well-formed if each event is preceded by no more returns than calls
+    // Not modeling this for now because epidemic register calls all return immediately
 }
+
+
+// 8.3 p109
+pred dontforge[M : set Message] {
+    all e : E | ((e in recv) && (rcv[e] in M)) => some del.e
+}
+
+
 
 // Predecessor based on event ordering.
 // We use `Pred` instead of `pred` because `pred` is a reserved keyword

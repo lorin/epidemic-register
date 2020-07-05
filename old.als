@@ -204,7 +204,7 @@ abstract sig Trajectory {
     // Definition 7.4:
     // A trajectory is well-formed if each event is preceded by no more returns than calls
     // We enforce well-formedness here
-    all e : E | #{r : returns[E] | r->e in eo or r=e} <= #{c : calls[E] | c->e in eo or c=e}
+    all e : this.@E | #{r : returns[E] | r->e in eo or r=e} <= #{c : calls[E] | c->e in eo or c=e}
 }
 
 fun tr[e: Event] : Transition {
