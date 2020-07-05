@@ -79,9 +79,13 @@ fact {
 
     // All roles must have associated events
     all r : Role | some role.r
-    some read
-    some write
+
+    // Don't allow any undefined reads
+    all e : read | some e.v
+
+   some read
+   some del
 }
 
 run {
-} for 4 but 3 Role
+} for 6 but 2 Role

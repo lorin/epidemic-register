@@ -26,10 +26,6 @@ abstract sig E {
         next = {s : E' | s in eo-this and no t : E'-(this+s) | ( (this->t) + (t->s)) in @eo}
 }
 
-/*
-let E' = write.role.~role | {s : E' | s in write.eo-write and no t : E'-(s+write) | ( (write->t) + (t->s)) in eo}
-*/
-
 /**
  *  p87, Defintion 7.5
  */ 
@@ -48,14 +44,14 @@ fact "Concrete executions" {
 
     // c5: 
     injective[del, E]
-    all s,r : E | (s->r in del) => (s->r in eo) and rcv[r] in snd[s]
-
-
+    all s,r : E | (s->r in del) => {
+        (s->r in eo) 
+        some rcv[r]
+        rcv[r] in snd[s]
+    }
 }
 
-abstract sig Role {
-
-}
+abstract sig Role {}
 
 abstract sig State {}
 
@@ -129,6 +125,10 @@ abstract sig stepret extends Transition {
     rval = v
 }
 
+fact "All transitions have pre states except init" {
+    all t : Transition | (no t.pre) => t in init
+}
+
 /**
  * Trajectories are defined on p86
  */
@@ -167,6 +167,3 @@ pred dontforge[M : set Message] {
 fun Pred[E': set E, eo: E->E, e: E] : lone E {
      { p : E' | (p->e in eo-iden) and no q : E'-(p+e) | (p->q) + (q->e) in eo}
 }
-
-
-run {}
