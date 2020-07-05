@@ -54,87 +54,68 @@ abstract sig Message {}
 
 abstract sig Transition extends E {
     , rcv: lone Message
-    , pre: lone State
-    , post: State
     , snd: set Message
     , rval: lone Value
 
-    , sigma' : State
+    , pre : lone State
+    , post : State
     , M : set Message
-}
-
-abstract sig NonInitialTransition extends Transition {
-    , sigma : State
 }
 
 //
 // See definition 7.2, p85
 //
-
 abstract sig init extends Transition {
 } {
     no this.@rcv
     no pre
-    post = sigma'
     snd = M
     no rval
 }
 
-abstract sig call extends NonInitialTransition {
+abstract sig call extends Transition {
 } {
     no this.@rcv 
-    pre = sigma
-    post = sigma'
     snd = M
     no rval
 }
 
-abstract sig recv extends NonInitialTransition {
+abstract sig recv extends Transition {
     , m : Message
 } {
     rcv = m
-    pre = sigma
-    post = sigma'
     snd = M
     no rval
 }
 
-abstract sig step extends NonInitialTransition {
+abstract sig step extends Transition {
 }{
     no this.@rcv
-    pre = sigma
-    post = sigma'
     snd = M
     no rval
 }
 
-abstract sig callret extends NonInitialTransition {
+abstract sig callret extends Transition {
     , v : lone Value
 } {
     no this.@rcv
-    pre = sigma
-    post = sigma'
     snd = M
     rval = v
 }
 
-abstract sig rcvret extends NonInitialTransition {
+abstract sig rcvret extends Transition {
     , m : Message
     , v : Value
 } {
     rcv = m
-    pre = sigma
-    post = sigma'
     snd = M
     rval = v
 }
 
-abstract sig stepret extends NonInitialTransition {
+abstract sig stepret extends Transition {
     , v : Value
 } {
     no this.@rcv
-    pre = sigma
-    post = sigma'
     snd = M
     rval = v
 }
