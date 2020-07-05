@@ -46,12 +46,12 @@ sig read extends callret {} {
     o = Read
     sigma' = sigma
     no M
-    // v = sigma.current
+    v = sigma.current
 }
 
 // Helper function to get role from transition
 fun lookupRole[t : Transition] : this/Role {
-    let ex = Execution, e = (ex.tr_).t | (ex.role)[e]
+    let ex = Execution, e = (ex.tr).t | (ex.role)[e]
 }
 
 sig Value extends c/Value {}
