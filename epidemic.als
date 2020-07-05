@@ -16,7 +16,6 @@ pred lessthan(t1, t2 : Timestamp) {
     }
 }
 
-
 sig Latest extends Message {
     , val : this/Value
     , t : Timestamp
@@ -72,7 +71,7 @@ sig write extends callret {
 
 }
 
-sig Periodically extends Process {}
+one sig Periodically extends Process {}
 
 sig gossip extends step {} {
     p = Periodically
@@ -116,14 +115,15 @@ Trajectory: R
 
 // 1 Role
 run { 
-    some this/read 
-    some this/write
-    } for 4 but 2 this/Value, 1 this/Role, 1 Process, 1 Execution, 1 Trajectory
+    
+//    some this/read 
+//     some this/write
+    } for 4 but 1 Execution, 1 Process, 2 this/Value, 2 this/Role
 
 // run { } for 2 but 3 this/State, 4 Timestamp, 3 this/Value
 
 
- run {some read } for 1 but 2 Transition, 2 this/Event, 2 this/State, 3 Timestamp, 2 this/Value, 2 Operation
+//  run {some read } for 1 but 2 Transition, 2 this/Event, 2 this/State, 3 Timestamp, 2 this/Value, 2 Operation
 // run {some write } for 1 but 2 Transition, 2 this/Event, 2 this/State, 3 Timestamp, 2 this/Value
 
 /*

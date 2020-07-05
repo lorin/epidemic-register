@@ -7,14 +7,27 @@ From Principles of Eventual Conistency by Sebastian Burckhardt
 */
 
 open util/ordering[Role]
+open util/relation as r
 
 abstract sig Value {}
 
-abstract sig Event {}
+abstract sig Event {
+    // Not part of the original, added for convenience
+    , role: one Role
+} {
+    role = (Execution.@role)[this]
+}
 
 one sig undef {}
 
-abstract sig Role {}
+abstract sig Role {
+    // TODO: Remove, this is a temporary thing
+    , traj: one Trajectory
+} 
+
+fact "Role to trajectory is one-to-one" {
+    r/injective[traj, Trajectory]
+}
 
 abstract sig State {}
 
@@ -38,17 +51,20 @@ abstract sig Transition {
 
     , sigma' : State
     , M : set Message
+
+    // These are not part of the original doc, but added here for convenience
+    , e : one Event
+    , role: one Role
     , next : lone Transition
 } {
-    let e = Execution.tr.this | 
-    next = 
-    { n : Event | { (e->n in Execution.eo) and {no m : Event | ((e->m)+(m->n)) in Execution.eo }}
+    e = Execution.tr.this  
+    role = Execution.@role[e]
+
+    next = { n : Event | { 
+        e->n in Execution.eo 
+        no m : Event | ((e->m)+(m->n)) in Execution.eo 
+        }
     }.(Execution.tr)
-    /*
-
-let e = Execution.tr.gossip | { n : this/Event | { (e->n in Execution.eo) and {no m : this/Event | ((e->m)+(e->n)) in Execution.eo }}}
-
-    */
 }
 
 abstract sig NonInitialTransition extends Transition {
@@ -160,21 +176,22 @@ abstract sig Trajectory {
     tr.Transition in E
 
     // t1: eo is an enumeration (total order) of E
-    eo in E->E
-    no iden & eo // irreflexive 
-    no eo & ~eo // anti-symmetric
-    all e1, e2 : E | e1!=e2 => (e1->e2 in eo or (e2->e1 in eo)) // all elements
+    totalOrder[eo, E]
 
 
 
     // t3: The first (and only the first) transition is an initialization transition, 
     // and the pre-state of each transition matches the post-state of the previous transition
 
+    // TODO: Figure out why this is problematic
+    /*
     all e : E | {
         // Initial state
         pre[e] = undef // no pre-state
         pred_[E, eo, e] = undef // no predecessor
+
     } or pre[e] = post[pred_[E, eo, e]]  // prestate is poststate of predecessor
+    */
 
     // t4: A call transition may not follow another call transition unless there is a return transition in between them:
     all c1, c2 : calls[E] | 
@@ -257,30 +274,29 @@ one sig Execution {
     // All events are in the concrete execution
     Event in E
 
+/*
     // All events are associated with a role
     E in role.Role
 
+
     // Each role's events are associated with a trajectory
-    /*
     all r : Role | some t : Trajectory | {
-        t._E = role.r
+        t.@E = role.r
     }
     
     // c4: events for each role form a trajectory
     all t : Trajectory | some r: Role {
-        t._E = role.r
-        t._eo in eo
-        t._tr in tr
+        t.@E = role.r
+        t.@eo in eo
+        t.@tr in tr
     }
     */
 
     // Execution order constraints
-    no iden & eo // irreflexive 
-    no eo & ~eo // anti-symmetric
-    all e1, e2 : E | e1!=e2 => (e1->e2 in eo or (e2->e1 in eo)) // all elements
+    totalOrder[eo, E]
 
     // c5: 
-    all e : E | lone del.e // injective
+    injective[del, E]
     all s,r : E | (s->r in del) => (s->r in eo) and (rcvd[r] in snt[s])
   
 
