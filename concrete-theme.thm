@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<defaultnode visible="no"/>
+
+<defaultedge/>
+
+<node>
+   <type name="Event"/>
+   <type name="gossip"/>
+   <type name="init"/>
+   <type name="Int"/>
+   <type name="Latest"/>
+   <type name="ok"/>
+   <type name="Periodically"/>
+   <type name="rcv"/>
+   <type name="Read"/>
+   <type name="read"/>
+   <type name="Role"/>
+   <type name="State"/>
+   <type name="String"/>
+   <type name="Timestamp"/>
+   <type name="univ"/>
+   <type name="Value"/>
+   <type name="Write"/>
+   <type name="write"/>
+   <type name="c/call"/>
+   <type name="c/callret"/>
+   <type name="c/Event"/>
+   <type name="c/Execution"/>
+   <type name="c/init"/>
+   <type name="c/Message"/>
+   <type name="c/NonInitialTransition"/>
+   <type name="c/Operation"/>
+   <type name="c/Process"/>
+   <type name="c/rcv"/>
+   <type name="c/rcvret"/>
+   <type name="c/Role"/>
+   <type name="c/State"/>
+   <type name="c/step"/>
+   <type name="c/stepret"/>
+   <type name="c/Trajectory"/>
+   <type name="c/undef"/>
+   <type name="c/Value"/>
+   <type name="seq/Int"/>
+   <type name="c/ordering/Ord"/>
+</node>
+
+<node visible="yes">
+   <type name="c/Transition"/>
+</node>
+
+</view>
+
+</alloy>
