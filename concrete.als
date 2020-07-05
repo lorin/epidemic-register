@@ -29,7 +29,7 @@ fun lookupEvent[t : Transition[]] : Event {
 
 abstract sig Transition {
     , op: Operation+undef
-    , _rcv: Message+undef
+    , rcv: Message+undef
     , _proc: Process+undef
     , _pre: State+undef
     , _post: State
@@ -56,7 +56,7 @@ abstract sig Operation {}
 abstract sig init extends Transition {
 } {
     op = undef
-    _rcv = undef
+    rcv = undef
     _proc = undef
     _pre = undef
     _post = sigma'
@@ -68,7 +68,7 @@ abstract sig call extends NonInitialTransition {
     , o: Operation
 } {
     op = o
-    _rcv = undef
+    rcv = undef
     _proc = undef
     _pre = sigma
     _post = sigma'
@@ -80,7 +80,7 @@ abstract sig rcv extends NonInitialTransition {
     , m : Message
 } {
     op = undef
-    _rcv = m
+    rcv = m
     _proc = undef
     _pre = sigma
     _post = sigma'
@@ -92,7 +92,7 @@ abstract sig step extends NonInitialTransition {
     , p : Process
 }{
     op = undef
-    _rcv = undef
+    rcv = undef
     _proc = p
     _pre = sigma
     _post = sigma'
@@ -105,7 +105,7 @@ abstract sig callret extends NonInitialTransition {
     , v : Value+undef
 } {
     op = o
-    _rcv = undef
+    rcv = undef
     _proc = undef
     _pre = sigma
     _post = sigma'
@@ -118,7 +118,7 @@ abstract sig rcvret extends NonInitialTransition {
     , v : Value
 } {
     op = undef
-    _rcv = m
+    rcv = m
     _proc = undef
     _pre = sigma
     _post = sigma'
@@ -131,7 +131,7 @@ abstract sig stepret extends NonInitialTransition {
     , v : Value
 } {
     op = undef
-    _rcv = undef
+    rcv = undef
     _proc = p
     _pre = sigma
     _post = sigma'
@@ -220,7 +220,7 @@ fun pred_[E: set Event, eo: Event->Event, e: Event] : Event+undef {
 
 // Message received
 fun rcvd[e : Event] : Message {
-    tr[e]._rcv
+    tr[e].rcv
 }
 
 // Messages sent
