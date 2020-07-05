@@ -5,6 +5,9 @@ sig Timestamp {
     , pid: this/Role
 }
 
+sig Value extends concrete/Value {}
+one sig ok extends concrete/Value {}
+
 
 pred lessthan(t1, t2 : Timestamp) {
     t1.number < t2.number or {
@@ -19,7 +22,7 @@ sig Latest extends Message {
 }
 
 sig State extends concrete/State {
-    , current: lone Value
+    , current: lone this/Value
     , written: Timestamp
 } 
 
@@ -29,8 +32,55 @@ fact "Don't forge messages" {
 }
 
 sig init extends concrete/init {} {
-    no sigma'.current
-    sigma'.written.number = 0
-    sigma'.written.pid = role
+    no post.current
+    post.written.number = 0
+    post.written.pid = role
     no M
 }
+
+sig read extends callret {} {
+    post = pre
+    no M
+    v = pre.current
+}
+
+sig write extends callret {
+    arg : this/Value
+} {
+    post.current = arg
+    post.written.number = pre.written.number.add[1]
+    post.written.pid = role
+    no M
+    v = ok
+}
+
+sig gossip extends step {} {
+    post = pre
+    M.val = pre.current
+    M.t = pre.written
+}
+
+sig recv extends concrete/recv {
+    , val: this/Value
+    , ts: Timestamp
+} {
+    no M
+    lessthan[pre.written, ts] => {
+        post.current = val
+        post.written = ts
+    } else {
+        post=pre
+    }
+}
+
+fact {
+    // Only allow model transitions defined in this spec
+    E in this/init+read+write+gossip+this/recv
+
+    // All roles must have associated events
+    all r : Role | some role.r
+}
+
+run {
+    some read
+} for 4
