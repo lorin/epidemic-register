@@ -85,10 +85,21 @@ fact {
     // All timestamps must be associated with a state
     Timestamp in this/State.written
 
+    // Timestamps must be distinct (they are value objects)
+    all t1, t2 : Timestamp | (t1.number=t2.number and t1.pid=t2.pid) => t1=t2
+
+    // All messages must be associated with a send or a recive
+    Message in this/recv.m + send.M
+
+    // All states must be associated with a pre or post state
+    // this/State in E.(pre+post)
+
+
+
+
+
     // Don't allow any undefined reads
     all e : read | some e.v
-
-    // works above here
 
    // Some messages
    some del
