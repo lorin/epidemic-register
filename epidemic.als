@@ -139,10 +139,10 @@ fact "Abstract executions" {
     all e1, e2 : EA | e1.role=e2.role <=> e1->e2 in ss
 }
 
-// p 102
+// p 121
 fact "Witness" {
-    some viz
-    some ar
+    all e1,e2 : EA | (lessthan[e1.pre.written, e2.pre.written] or (e1.pre.written=e2.pre.written and e1->e2 in eo)) <=> (e1->e2 in viz)
+    viz = ar
 }
 
 run {
