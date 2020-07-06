@@ -40,9 +40,6 @@ they are such a simple data structure, even the simplest data structure
 is very complex when implemented in a distributed system!
 
 
-
-
-
 # What does the CAP theorem really mean?
 
 We need a formal definition of the CAP theorem.
@@ -107,6 +104,15 @@ protocol EpidemicRegister {
 }
 
 ```
+
+# TLA+
+
+See [epidemic.tla][epidemic.tla] for the TLA+/PlusCal model.
+
+There's a refinement that shows that this implementation is a sequentially consistent implementation
+of the spec [register.tla][register.tla].
+
+# Alloy
 
 
 [PoEC]: https://www.microsoft.com/en-us/research/publication/principles-of-eventual-consistency/
