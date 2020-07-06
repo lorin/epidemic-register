@@ -145,12 +145,6 @@ fact "Witness" {
     viz = ar
 }
 
-fact "Two values" {
-    // If there's only one value, then it's not obvious
-    // that the counterexample is actually wrong
-    #V=2
-
-}
  assert abstract_execution {
      acyclic[viz, EA]
      strictTotalOrder[ar, EA]
@@ -160,11 +154,5 @@ fact "Two values" {
      // All we need to do is check realtime
      rb in ar
  }
-
-/*
-run { 
-    acyclic[viz, EA]
-} for 8 but 2 Role
-*/
 
 check linearizable for 8 but 2 Role, 2 V
