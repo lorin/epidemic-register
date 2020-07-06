@@ -1,5 +1,7 @@
 # Beating the CAP theorem: the epidemic register
 
+*Note: This is currently a work in progress.*
+
 The CAP theorem states that distributed data structures cannot have
 all three of the following properties:
 
@@ -7,20 +9,21 @@ all three of the following properties:
 * availability
 * partition tolerance
 
-But the CAP theorem is a general result, it doesn't say anything about whether
-any particular data structure can have all three properties.
 
-It turns out that there is a data structure that has all three properties: 
+Alas, there's no way to beat the CAP theorem for *linearizable* consistency. However, if
+you're willing to settle for the slightly weaker (but still strong) *sequential consistency*,
+then, well, you still can't beat the CAP theorem in the general case. 
+
+However, it turns out that there is a data structure that has all three properties: 
 the *epidemic register*.
 
 This post uses that register as an example to explain the CAP theorem, as
 well as illustrate how to do some formal specifying use TLA+ and Alloy.
 
-A lot of this is based on Sebastian Burckhardt's excellent (free!) book 
-[Principles of Eventual Consistency][PoEC]
+Much of this post comes directly from Sebastian Burckhardt's excellent (free!) book 
+[Principles of Eventual Consistency][PoEC]. I'm just going to call it [PoEC] from.
 
 # What's a register?
-
 
 A register is a data structure that supports two operation:
 
@@ -59,7 +62,6 @@ Operations can't block
 ## Partition tolerance
 
 An arbitrary amount of messages may be lost
-
 
 # What is an epidemic register?
 
@@ -113,6 +115,27 @@ There's a refinement that shows that this implementation is a sequentially consi
 of the spec [register.tla][register.tla].
 
 # Alloy
+
+The Alloy model is pretty much a direct implementation of the event graph scheme outlined in [PoEC].
+
+The file [concrete.als][concrete.als] contains models about concrete executions that aren't specific
+to any implementation.
+
+The file [epidemic.als][epidemic.als] contains the implementation of the epidemic register, using
+the models defined in concrete.als.
+
+## Not linearizable: a counterexample
+
+To generate a counterexample that shows a history that isn't linearizable, see the epidemic.als file.
+
+### Concrete exeuction
+
+Here's a concrete execution
+
+![Concrete execution visualization][concrete.png]
+
+### Abstract execution
+
 
 
 [PoEC]: https://www.microsoft.com/en-us/research/publication/principles-of-eventual-consistency/
