@@ -175,11 +175,9 @@ r(V1)
 ```
 
 That's a valid sequential history for a register! But it has sequenced `w(V1)` after `r(V0)`, and we
-know from the concrete execution and the histoyr that the `r(v0)` actually happened before `w(v1)`.
+know from the concrete execution and the history that the `r(v0)` actually happened before `w(v1)`.
 
-This shows how this sequentially consistent history is not linearizable.
-
-
+This demonstreates how a sequentially consistent history is not necessarily linearizable.
 
 
 
