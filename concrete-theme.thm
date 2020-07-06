@@ -11,13 +11,11 @@
    <type name="init"/>
    <type name="Int"/>
    <type name="Latest"/>
-   <type name="R"/>
    <type name="read"/>
    <type name="recv"/>
    <type name="send"/>
    <type name="State"/>
    <type name="String"/>
-   <type name="univ"/>
    <type name="write"/>
    <type name="concrete/call"/>
    <type name="concrete/callret"/>
@@ -38,12 +36,23 @@
    <type name="concrete/Role"/>
 </node>
 
+<node numberatoms="no">
+   <type name="univ"/>
+</node>
+
+<node numberatoms="yes">
+   <type name="R"/>
+</node>
+
 <node visible="no">
    <type name="ok"/>
    <type name="Timestamp"/>
-   <type name="V"/>
    <type name="concrete/Message"/>
    <type name="concrete/State"/>
+</node>
+
+<node visible="no" numberatoms="yes">
+   <type name="V"/>
 </node>
 
 <edge attribute="no">

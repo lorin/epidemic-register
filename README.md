@@ -127,14 +127,49 @@ the models defined in concrete.als.
 ## Not linearizable: a counterexample
 
 To generate a counterexample that shows a history that isn't linearizable, see the epidemic.als file.
+I'm going to use terminology from [PoEC]:
+
+* concrete execution
+* history
+* abstract execution
+
 
 ### Concrete exeuction
 
-Here's a concrete execution
+Here's a *concrete execution*, displayed using the concrete-theme.thm theme file:
 
 ![Concrete execution visualization](concrete.png)
 
+There are two roles, denoted R0 and R1. You can think of a role as a server.
+
+### History
+
+Here's a history, which removes a lot of details and just shows returns-before (*rb*) and same-session (*ss*)
+relations. 
+
+![History visualization](history.png)
+
+Note how the `w(V1)` operation returns before the `r(V0)` operation.
+
+
 ### Abstract execution
+
+Here's an *abstract execution*. Note that I'm only showing arbitration (*ar*) and
+visualization (*viz*) relations. And, in this case, they're identical, so I don't really
+need to show them both.
+
+![Abstract execution visualization](abstract.png)
+
+The relations create a total ordering, which I've shown from top to bottom. You can see the sequencing:
+
+```
+w(V0)
+r(V0)
+w(V1)
+r(V1)
+```
+
+
 
 
 
