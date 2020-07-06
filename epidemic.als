@@ -109,5 +109,29 @@ fact {
    all r : Role | some read & role.r
 }
 
+//
+// Observable history, p90
+
+sig EA in E {
+    // returns before
+    , rb: set EA
+
+    // same session
+    , ss: some EA
+}
+
+fact "Abstract executions" {
+    // x1: events are the operations
+    EA = read+write
+
+
+    // x4: rb is captured by execution order
+    // No worries about overlapping calls here because all calls are atomic
+    all e1, e2 : EA | (e1->e2 in eo-iden) <=> (e1->e2 in rb)
+
+    // x5: ss is role
+    all e1, e2 : EA | e1.role=e2.role <=> e1->e2 in ss
+}
+
 run {
 } for 8 but 2 Role
