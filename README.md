@@ -111,10 +111,11 @@ protocol EpidemicRegister {
 
 # TLA+
 
-See [epidemic.tla](epidemic.tla) for the TLA+/PlusCal model.
+See [epidemic.tla](epidemic.tla) for the TLA+/PlusCal model. The model contains some extra variables
+that aren't needed to model the register but are needed to show that the register is sequentially consequent.
 
 There's a refinement that shows that this implementation is a sequentially consistent implementation
-of the spec [register.tla](register.tla).
+of the spec [register.tla](register.tla). 
 
 # Alloy
 
