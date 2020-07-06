@@ -7,13 +7,13 @@ sig Latest extends Message {
 
 sig Timestamp {
     , number : Int
-    , pid: this/Role
+    , pid: Role
 }
 
-sig R extends concrete/Role {} // Remove namespace from visualization
+sig R extends Role {} // Remove namespace from visualization
 
-sig Value extends concrete/Value {}
-one sig ok extends concrete/Value {}
+sig V extends Value {}
+one sig ok extends Value {}
 
 
 pred lessthan(t1, t2 : Timestamp) {
@@ -24,7 +24,7 @@ pred lessthan(t1, t2 : Timestamp) {
 }
 
 sig State extends concrete/State {
-    , current: lone this/Value
+    , current: lone V
     , written: Timestamp
 } 
 
@@ -47,7 +47,7 @@ sig read extends callret {} {
 }
 
 sig write extends callret {
-    arg : this/Value
+    arg : V
 } {
     post.current = arg
     post.written.number = pre.written.number.add[1]
@@ -85,13 +85,13 @@ fact {
     all e : read | some e.v
 
    // Some messages
-   some del
+   // some del
 
    // Some reads
-   some read
+   #read=2
 
    // All roles have reads
-   //all r : Role | read in role.r
+   all r : Role | read in role.r
 }
 
 run {

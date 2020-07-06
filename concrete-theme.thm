@@ -8,12 +8,13 @@
 <defaultedge/>
 
 <node>
-   <type name="gossip"/>
    <type name="init"/>
    <type name="Int"/>
    <type name="Latest"/>
+   <type name="R"/>
    <type name="read"/>
    <type name="recv"/>
+   <type name="send"/>
    <type name="State"/>
    <type name="String"/>
    <type name="univ"/>
@@ -22,8 +23,8 @@
    <type name="concrete/callret"/>
    <type name="concrete/E"/>
    <type name="concrete/init"/>
-   <type name="concrete/rcvret"/>
    <type name="concrete/recv"/>
+   <type name="concrete/recvret"/>
    <type name="concrete/step"/>
    <type name="concrete/stepret"/>
    <type name="concrete/Transition"/>
@@ -39,7 +40,7 @@
 <node visible="no">
    <type name="ok"/>
    <type name="Timestamp"/>
-   <type name="Value"/>
+   <type name="V"/>
    <type name="concrete/Message"/>
    <type name="concrete/State"/>
 </node>
@@ -47,11 +48,6 @@
 <edge attribute="no">
    <relation name="M"> <type name="concrete/E"/> <type name="concrete/Message"/> </relation>
    <relation name="v"> <type name="concrete/callret"/> <type name="concrete/Value"/> </relation>
-   <relation name="v"> <type name="concrete/rcvret"/> <type name="concrete/Value"/> </relation>
-</edge>
-
-<edge attribute="yes">
-   <relation name="arg"> <type name="write"/> <type name="Value"/> </relation>
 </edge>
 
 <edge visible="no">
@@ -62,8 +58,6 @@
    <relation name="number"> <type name="Timestamp"/> <type name="Int"/> </relation>
    <relation name="role"> <type name="concrete/E"/> <type name="concrete/Role"/> </relation>
    <relation name="rval"> <type name="concrete/E"/> <type name="concrete/Value"/> </relation>
-   <relation name="val"> <type name="concrete/Message"/> <type name="Value"/> </relation>
-   <relation name="val"> <type name="concrete/recv"/> <type name="Value"/> </relation>
 </edge>
 
 </view>
