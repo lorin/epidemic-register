@@ -161,3 +161,5 @@ pred isTrajectory[r : Role] {
 pred dontforge[M : set Message] {
     all e : E | ((e in recv) && (rcv[e] in M)) => some del.e
 }
+
+run { } for 6 but 2 Role
