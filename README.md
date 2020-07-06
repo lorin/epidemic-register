@@ -160,7 +160,8 @@ need to show them both.
 
 ![Abstract execution visualization](abstract.png)
 
-The relations create a total ordering, which I've shown from top to bottom. You can see the sequencing:
+The relations create a total ordering, which I've shown from top to bottom. Here's how the abstract
+execution has sequenced the operations:
 
 ```
 w(V0)
@@ -168,6 +169,11 @@ r(V0)
 w(V1)
 r(V1)
 ```
+
+That's a valid sequential history for a register! But it has sequenced `w(V1)` after `r(V0)`, and we
+know from the concrete execution and the histoyr that the `r(v0)` actually happened before `w(v1)`.
+
+This shows how this sequentially consistent history is not linearizable.
 
 
 
