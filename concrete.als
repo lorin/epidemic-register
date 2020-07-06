@@ -28,10 +28,10 @@ abstract sig E {
 
 
 // Built-in total order is reflexive and we want irreflexive
-pred strictTotalOrder[eo : E->E, E' : set E]  {
-    irreflexive[eo]
-    transitive[eo]
-    E->E in eo + ~eo + iden
+pred strictTotalOrder[r : univ->univ, A : set univ]  {
+    irreflexive[r]
+    transitive[r]
+    A->A in r + ~r + iden
 }
 
 /**

@@ -141,9 +141,23 @@ fact "Abstract executions" {
 
 // p 121
 fact "Witness" {
-    all e1,e2 : EA | (lessthan[e1.pre.written, e2.pre.written] or (e1.pre.written=e2.pre.written and e1->e2 in eo)) <=> (e1->e2 in viz)
+    all e1,e2 : EA | (lessthan[e1.post.written, e2.post.written] or (e1.post.written=e2.post.written and e1->e2 in eo)) <=> (e1->e2 in viz)
     viz = ar
 }
+ assert abstract_execution {
+     acyclic[viz, EA]
+     strictTotalOrder[ar, EA]
+ }
 
-run {
+ assert linearizable {
+     // All we need to do is check realtime
+     rb in ar
+ }
+
+/*
+run { 
+    acyclic[viz, EA]
 } for 8 but 2 Role
+*/
+
+check linearizable for 8 but 2 Role

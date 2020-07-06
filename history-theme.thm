@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<defaultnode numberatoms="no"/>
+
+<defaultedge/>
+
+<node>
+   <type name="init"/>
+   <type name="Int"/>
+   <type name="Latest"/>
+   <type name="R"/>
+   <type name="read"/>
+   <type name="recv"/>
+   <type name="send"/>
+   <type name="State"/>
+   <type name="String"/>
+   <type name="univ"/>
+   <type name="write"/>
+   <type name="concrete/call"/>
+   <type name="concrete/callret"/>
+   <type name="concrete/init"/>
+   <type name="concrete/recv"/>
+   <type name="concrete/recvret"/>
+   <type name="concrete/step"/>
+   <type name="concrete/stepret"/>
+   <type name="concrete/Transition"/>
+   <type name="concrete/Value"/>
+   <type name="seq/Int"/>
+   <type name="concrete/ordering/Ord"/>
+   <set name="this/EA" type="concrete/E"/>
+</node>
+
+<node hideunconnected="yes">
+   <type name="concrete/E"/>
+   <type name="concrete/Role"/>
+</node>
+
+<node visible="no">
+   <type name="ok"/>
+   <type name="Timestamp"/>
+   <type name="V"/>
+   <type name="concrete/Message"/>
+   <type name="concrete/State"/>
+</node>
+
+<edge attribute="no">
+   <relation name="M"> <type name="concrete/E"/> <type name="concrete/Message"/> </relation>
+   <relation name="rb"> <type name="concrete/E"/> <type name="concrete/E"/> </relation>
+   <relation name="v"> <type name="concrete/callret"/> <type name="concrete/Value"/> </relation>
+</edge>
+
+<edge visible="no">
+   <relation name="ar"> <type name="concrete/E"/> <type name="concrete/E"/> </relation>
+   <relation name="del"> <type name="concrete/E"/> <type name="concrete/E"/> </relation>
+   <relation name="eo"> <type name="concrete/E"/> <type name="concrete/E"/> </relation>
+   <relation name="next"> <type name="concrete/E"/> <type name="concrete/E"/> </relation>
+   <relation name="viz"> <type name="concrete/E"/> <type name="concrete/E"/> </relation>
+</edge>
+
+<edge visible="no" attribute="yes">
+   <relation name="arg"> <type name="write"/> <type name="V"/> </relation>
+   <relation name="number"> <type name="Timestamp"/> <type name="Int"/> </relation>
+   <relation name="rval"> <type name="concrete/E"/> <type name="concrete/Value"/> </relation>
+</edge>
+
+<edge visible="no" layout="yes" attribute="no">
+   <relation name="role"> <type name="concrete/E"/> <type name="concrete/Role"/> </relation>
+</edge>
+
+</view>
+
+</alloy>
