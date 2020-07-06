@@ -10,12 +10,13 @@ all three of the following properties:
 * partition tolerance
 
 
-Alas, there's no way to beat the CAP theorem for *linearizable* consistency. However, if
-you're willing to settle for the slightly weaker (but still strong) *sequential consistency*,
-then, well, you still can't beat the CAP theorem in the general case. 
+Alas, there's no way to beat the CAP theorem for *linearizable* consistency. However, what about 
+the weaker (but still strong) *sequential consistency*? 
+Well, you still can't beat the CAP theorem in the general case. 
 
-However, it turns out that there is a data structure that has all three properties: 
-the *epidemic register*.
+However, if you're willing to settle for sequential consistency, it turns out
+that there is a data structure that has all three properties: the *epidemic
+register*.
 
 This post uses that register as an example to explain the CAP theorem, as
 well as illustrate how to do some formal specifying use TLA+ and Alloy.
@@ -41,6 +42,7 @@ the instructions operate on the data inside of the registers.
 Distributed systems researchers care about registers because, even though
 they are such a simple data structure, even the simplest data structure
 is very complex when implemented in a distributed system!
+
 
 
 # What does the CAP theorem really mean?
