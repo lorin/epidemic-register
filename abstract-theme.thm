@@ -34,8 +34,11 @@
 </node>
 
 <node hideunconnected="yes">
-   <type name="concrete/E"/>
    <type name="concrete/Role"/>
+</node>
+
+<node hideunconnected="yes" numberatoms="no">
+   <type name="concrete/E"/>
 </node>
 
 <node visible="no">
