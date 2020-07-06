@@ -74,6 +74,7 @@ sig recv extends concrete/recv {
     }
 }
 
+
 fact {
     // Only allow model transitions defined in this spec
     E in this/init+read+write+send+this/recv
@@ -81,18 +82,20 @@ fact {
     // All roles must have associated events
     all r : Role | some role.r
 
+    // All timestamps must be associated with a state
+    Timestamp in this/State.written
+
     // Don't allow any undefined reads
     all e : read | some e.v
 
-   // Some messages
-   // some del
+    // works above here
 
-   // Some reads
-   #read=2
+   // Some messages
+   some del
 
    // All roles have reads
-   all r : Role | read in role.r
+   all r : Role | some read & role.r
 }
 
 run {
-} for 6 but 2 Role
+} for 8 but 2 Role
