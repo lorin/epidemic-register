@@ -144,6 +144,13 @@ fact "Witness" {
     all e1,e2 : EA | (lessthan[e1.post.written, e2.post.written] or (e1.post.written=e2.post.written and e1->e2 in eo)) <=> (e1->e2 in viz)
     viz = ar
 }
+
+fact "Two values" {
+    // If there's only one value, then it's not obvious
+    // that the counterexample is actually wrong
+    #V=2
+
+}
  assert abstract_execution {
      acyclic[viz, EA]
      strictTotalOrder[ar, EA]
@@ -160,4 +167,4 @@ run {
 } for 8 but 2 Role
 */
 
-check linearizable for 8 but 2 Role
+check linearizable for 8 but 2 Role, 2 V

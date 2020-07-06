@@ -41,9 +41,12 @@
 <node visible="no">
    <type name="ok"/>
    <type name="Timestamp"/>
-   <type name="V"/>
    <type name="concrete/Message"/>
    <type name="concrete/State"/>
+</node>
+
+<node visible="no" numberatoms="yes">
+   <type name="V"/>
 </node>
 
 <edge attribute="no">
