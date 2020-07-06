@@ -109,19 +109,19 @@ protocol EpidemicRegister {
 
 # TLA+
 
-See [epidemic.tla][epidemic.tla] for the TLA+/PlusCal model.
+See [epidemic.tla](epidemic.tla) for the TLA+/PlusCal model.
 
 There's a refinement that shows that this implementation is a sequentially consistent implementation
-of the spec [register.tla][register.tla].
+of the spec [register.tla](register.tla).
 
 # Alloy
 
 The Alloy model is pretty much a direct implementation of the event graph scheme outlined in [PoEC].
 
-The file [concrete.als][concrete.als] contains models about concrete executions that aren't specific
+The file [concrete.als](concrete.als) contains models about concrete executions that aren't specific
 to any implementation.
 
-The file [epidemic.als][epidemic.als] contains the implementation of the epidemic register, using
+The file [epidemic.als](epidemic.als) contains the implementation of the epidemic register, using
 the models defined in concrete.als.
 
 ## Not linearizable: a counterexample
@@ -132,7 +132,7 @@ To generate a counterexample that shows a history that isn't linearizable, see t
 
 Here's a concrete execution
 
-![Concrete execution visualization][concrete.png]
+![Concrete execution visualization](concrete.png)
 
 ### Abstract execution
 
