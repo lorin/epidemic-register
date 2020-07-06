@@ -136,7 +136,7 @@ I'm going to use terminology from [PoEC]:
 
 ### Concrete exeuction
 
-Here's a *concrete execution*, displayed using the [concrete-theme.thm](concrete-theme.thm)] theme file:
+Here's a *concrete execution*, displayed using the [concrete-theme.thm](concrete-theme.thm) theme file:
 
 ![Concrete execution visualization](concrete.png)
 
