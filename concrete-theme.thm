@@ -55,9 +55,13 @@
 </edge>
 
 <edge visible="no" attribute="yes">
+   <relation name="arg"> <type name="write"/> <type name="V"/> </relation>
    <relation name="number"> <type name="Timestamp"/> <type name="Int"/> </relation>
-   <relation name="role"> <type name="concrete/E"/> <type name="concrete/Role"/> </relation>
    <relation name="rval"> <type name="concrete/E"/> <type name="concrete/Value"/> </relation>
+</edge>
+
+<edge visible="yes" layout="yes" attribute="no">
+   <relation name="role"> <type name="concrete/E"/> <type name="concrete/Role"/> </relation>
 </edge>
 
 </view>
