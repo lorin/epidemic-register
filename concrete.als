@@ -26,12 +26,22 @@ abstract sig E {
         next = {s : E' | s in eo-this and no t : E'-(this+s) | ( (this->t) + (t->s)) in @eo}
 }
 
+
+// Built-in total order is reflexive and we want irreflexive
+pred strictTotalOrder[eo : E->E, E' : set E]  {
+    irreflexive[eo]
+    transitive[eo]
+    E->E in eo + ~eo + iden
+}
+
 /**
  *  p87, Defintion 7.5
  */ 
 fact "Concrete executions" {
-    // c1: eo is an anumeration of E
-    totalOrder[eo, E]
+    // c1: eo is an eumeration of E, which is effectively a total order
+    // (It's also natural, but for finite sets that's equivalent)
+    strictTotalOrder[eo, E]
+
 
     // c2: every event is associated with a transition
     E in Transition
@@ -135,7 +145,7 @@ fact "All transitions have pre states except init" {
 pred isTrajectory[r : Role] {
 
     // t1: eo is an enumeration (total order) of E'
-    totalOrder[eo, role.r]
+    strictTotalOrder[eo, role.r]
 
     // t2: every event is associated with a transition
     role.r in Transition

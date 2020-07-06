@@ -1,3 +1,4 @@
+open util/relation
 open concrete
 
 sig Latest extends Message {
@@ -117,7 +118,12 @@ sig EA in E {
     , rb: set EA
 
     // same session
-    , ss: some EA
+    , ss: set EA
+
+    // visibility
+    , viz: set EA
+
+    , ar: set EA
 }
 
 fact "Abstract executions" {
@@ -127,10 +133,16 @@ fact "Abstract executions" {
 
     // x4: rb is captured by execution order
     // No worries about overlapping calls here because all calls are atomic
-    all e1, e2 : EA | (e1->e2 in eo-iden) <=> (e1->e2 in rb)
+    all e1, e2 : EA | (e1->e2 in eo) <=> (e1->e2 in rb)
 
     // x5: ss is role
     all e1, e2 : EA | e1.role=e2.role <=> e1->e2 in ss
+}
+
+// p 102
+fact "Witness" {
+    some viz
+    some ar
 }
 
 run {

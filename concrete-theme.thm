@@ -31,6 +31,7 @@
    <type name="concrete/Value"/>
    <type name="seq/Int"/>
    <type name="concrete/ordering/Ord"/>
+   <set name="this/EA" type="concrete/E"/>
 </node>
 
 <node hideunconnected="yes">
@@ -51,7 +52,11 @@
 </edge>
 
 <edge visible="no">
+   <relation name="ar"> <type name="concrete/E"/> <type name="concrete/E"/> </relation>
    <relation name="eo"> <type name="concrete/E"/> <type name="concrete/E"/> </relation>
+   <relation name="rb"> <type name="concrete/E"/> <type name="concrete/E"/> </relation>
+   <relation name="ss"> <type name="concrete/E"/> <type name="concrete/E"/> </relation>
+   <relation name="viz"> <type name="concrete/E"/> <type name="concrete/E"/> </relation>
 </edge>
 
 <edge visible="no" attribute="yes">
