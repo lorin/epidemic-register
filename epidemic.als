@@ -145,14 +145,26 @@ fact "Witness" {
     viz = ar
 }
 
+// Check if it corresponds to register spec
+pred register_meets_spec {
+    all r : read | some w : write | {
+        r.v=w.arg // read matches write
+        w in viz.r // write is visible to read
+        no w' : write | (w->w' + w'->r) in viz // no intermediate write
+
+    }
+}
+
  assert abstract_execution {
      acyclic[viz, EA]
      strictTotalOrder[ar, EA]
  }
 
+ 
  assert linearizable {
-     // All we need to do is check realtime
-     rb in ar
+     viz = ar // single order
+     rb in ar // realtime
+     register_meets_spec
  }
 
 check linearizable for 8 but 2 Role, 2 V
