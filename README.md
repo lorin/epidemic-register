@@ -122,9 +122,33 @@ and one for a linearizable regiser (RegLin).
 
 ## Not linearizable, a counterexample
 
-Alas, the epidemic register isn't linearizable. But that means we can use TLC to find a counter-example:
+Alas, the epidemic register isn't linearizable. But that means we can use TLC to find a counter-example.
+
+The property I checked was `RegLin!Spec`. The parameters in the model were:
+
+```
+Temporal formula: Spec
+
+Declared constants:
+N <- 2
+Steps <- 4
+Values <- [ model value ] {X, Y}
+
+Definition overrides:
+undef <- [ model value ]
+NIL [register] <- undef
+```
 
 ![error trace](not-linearizable-tla.png)
+
+Here's the history from that error trace, which clearly violates the specification for a register.
+
+```
+w(X)
+w(Y)
+r(X)
+```
+
 
 # Alloy
 
