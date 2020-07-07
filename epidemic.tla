@@ -15,6 +15,11 @@ variables
     steps = Steps;
     messages = {};
     history = {};
+    
+    
+    methodLin = undef;
+    valueLin = undef;
+    rvalLin = undef;
 
 define
     Timestamp(number, pid) == [number|->number, pid|->pid]
@@ -29,6 +34,13 @@ end define;
 macro Read() begin
     seq := seq + 1;
     retval := current;
+    
+    \* linearization refinement mapping
+    methodLin := "read";
+    valueLin := current;
+    rvalLin := retval;
+    
+    \* needed for sequential consistency refinement mapping
     history := history \union {[op|->"read", val|->retval,t|->written.number, pid|->written.pid, seq|->seq]};
 end macro;
 
@@ -36,6 +48,14 @@ macro Write(val) begin
     current := val;
     written := Timestamp(written.number+1,self);
     retval := "ok";
+    
+    \* linearization refinement mapping
+    methodLin := "write";
+    valueLin := current;
+    rvalLin := "ok";
+    
+    
+    \* needed for sequential consistency refinement mapping
     seq := 0;
     history := history \union {[op|->"write", val|->val,t|->written.number, pid|->self, seq|->seq]};
 end macro;
@@ -82,9 +102,9 @@ end process
 fair process Serialize = 0
 variables
     evt = undef;
-    method = undef;
-    value = undef;
-    rval = undef;
+    methodSeq = undef;
+    valueSeq = undef;
+    rvalSeq = undef;
 
 begin
 guard: await steps = 0;
@@ -97,16 +117,16 @@ next:  evt := CHOOSE h \in history :
                 \/ /\ h.t = x.t 
                    /\ h.pid = x.pid 
                    /\ h.seq < x.seq;
-       method := evt.op;
-       value := evt.val;
-       rval := IF method = "read" THEN evt.val ELSE "ok";
+       methodSeq := evt.op;
+       valueSeq := evt.val;
+       rvalSeq := IF methodSeq = "read" THEN evt.val ELSE "ok";
        history := history \ {evt};
 end while;
 end process
 
 end algorithm; *)
-\* BEGIN TRANSLATION - the hash of the PCal code: PCal-420ed5f15996682d5f12d353a75ab5db
-VARIABLES steps, messages, history, pc
+\* BEGIN TRANSLATION - the hash of the PCal code: PCal-220f550f3e95c3c950627584fc0fac6a
+VARIABLES steps, messages, history, methodLin, valueLin, rvalLin, pc
 
 (* define statement *)
 Timestamp(number, pid) == [number|->number, pid|->pid]
@@ -117,10 +137,11 @@ lessthan(t1, t2) == LET n1 == t1.number
                         pid2 == t2.pid
                     IN (n1 < n2) \/ (n1=n2 /\ pid1<pid2)
 
-VARIABLES current, written, retval, seq, evt, method, value, rval
+VARIABLES current, written, retval, seq, evt, methodSeq, valueSeq, rvalSeq
 
-vars == << steps, messages, history, pc, current, written, retval, seq, evt, 
-           method, value, rval >>
+vars == << steps, messages, history, methodLin, valueLin, rvalLin, pc, 
+           current, written, retval, seq, evt, methodSeq, valueSeq, rvalSeq
+        >>
 
 ProcSet == (Roles) \cup {0}
 
@@ -128,6 +149,9 @@ Init == (* Global variables *)
         /\ steps = Steps
         /\ messages = {}
         /\ history = {}
+        /\ methodLin = undef
+        /\ valueLin = undef
+        /\ rvalLin = undef
         (* Process Role *)
         /\ current = [self \in Roles |-> undef]
         /\ written = [self \in Roles |-> Timestamp(0, self)]
@@ -135,9 +159,9 @@ Init == (* Global variables *)
         /\ seq = [self \in Roles |-> 0]
         (* Process Serialize *)
         /\ evt = undef
-        /\ method = undef
-        /\ value = undef
-        /\ rval = undef
+        /\ methodSeq = undef
+        /\ valueSeq = undef
+        /\ rvalSeq = undef
         /\ pc = [self \in ProcSet |-> CASE self \in Roles -> "loop"
                                         [] self = 0 -> "guard"]
 
@@ -146,17 +170,23 @@ loop(self) == /\ pc[self] = "loop"
                     THEN /\ steps' = steps - 1
                          /\ \/ /\ seq' = [seq EXCEPT ![self] = seq[self] + 1]
                                /\ retval' = [retval EXCEPT ![self] = current[self]]
+                               /\ methodLin' = "read"
+                               /\ valueLin' = current[self]
+                               /\ rvalLin' = retval'[self]
                                /\ history' = (history \union {[op|->"read", val|->retval'[self],t|->written[self].number, pid|->written[self].pid, seq|->seq'[self]]})
                                /\ UNCHANGED <<messages, current, written>>
                             \/ /\ \E v \in Values:
                                     /\ current' = [current EXCEPT ![self] = v]
                                     /\ written' = [written EXCEPT ![self] = Timestamp(written[self].number+1,self)]
                                     /\ retval' = [retval EXCEPT ![self] = "ok"]
+                                    /\ methodLin' = "write"
+                                    /\ valueLin' = current'[self]
+                                    /\ rvalLin' = "ok"
                                     /\ seq' = [seq EXCEPT ![self] = 0]
                                     /\ history' = (history \union {[op|->"write", val|->v,t|->written'[self].number, pid|->self, seq|->seq'[self]]})
                                /\ UNCHANGED messages
                             \/ /\ messages' = (messages \union {Latest(current[self], written[self])})
-                               /\ UNCHANGED <<history, current, written, retval, seq>>
+                               /\ UNCHANGED <<history, methodLin, valueLin, rvalLin, current, written, retval, seq>>
                             \/ /\ \E m \in messages:
                                     IF lessthan(written[self], (m.t))
                                        THEN /\ current' = [current EXCEPT ![self] = m.val]
@@ -165,29 +195,32 @@ loop(self) == /\ pc[self] = "loop"
                                        ELSE /\ TRUE
                                             /\ UNCHANGED << current, written, 
                                                             seq >>
-                               /\ UNCHANGED <<messages, history, retval>>
+                               /\ UNCHANGED <<messages, history, methodLin, valueLin, rvalLin, retval>>
                             \/ /\ TRUE
-                               /\ UNCHANGED <<messages, history, current, written, retval, seq>>
+                               /\ UNCHANGED <<messages, history, methodLin, valueLin, rvalLin, current, written, retval, seq>>
                          /\ pc' = [pc EXCEPT ![self] = "loop"]
                     ELSE /\ pc' = [pc EXCEPT ![self] = "Done"]
-                         /\ UNCHANGED << steps, messages, history, current, 
-                                         written, retval, seq >>
-              /\ UNCHANGED << evt, method, value, rval >>
+                         /\ UNCHANGED << steps, messages, history, methodLin, 
+                                         valueLin, rvalLin, current, written, 
+                                         retval, seq >>
+              /\ UNCHANGED << evt, methodSeq, valueSeq, rvalSeq >>
 
 Role(self) == loop(self)
 
 guard == /\ pc[0] = "guard"
          /\ steps = 0
          /\ pc' = [pc EXCEPT ![0] = "wh"]
-         /\ UNCHANGED << steps, messages, history, current, written, retval, 
-                         seq, evt, method, value, rval >>
+         /\ UNCHANGED << steps, messages, history, methodLin, valueLin, 
+                         rvalLin, current, written, retval, seq, evt, 
+                         methodSeq, valueSeq, rvalSeq >>
 
 wh == /\ pc[0] = "wh"
       /\ IF history /= {}
             THEN /\ pc' = [pc EXCEPT ![0] = "next"]
             ELSE /\ pc' = [pc EXCEPT ![0] = "Done"]
-      /\ UNCHANGED << steps, messages, history, current, written, retval, seq, 
-                      evt, method, value, rval >>
+      /\ UNCHANGED << steps, messages, history, methodLin, valueLin, rvalLin, 
+                      current, written, retval, seq, evt, methodSeq, valueSeq, 
+                      rvalSeq >>
 
 next == /\ pc[0] = "next"
         /\ evt' = (  CHOOSE h \in history :
@@ -198,12 +231,13 @@ next == /\ pc[0] = "next"
                        \/ /\ h.t = x.t
                           /\ h.pid = x.pid
                           /\ h.seq < x.seq)
-        /\ method' = evt'.op
-        /\ value' = evt'.val
-        /\ rval' = (IF method' = "read" THEN evt'.val ELSE "ok")
+        /\ methodSeq' = evt'.op
+        /\ valueSeq' = evt'.val
+        /\ rvalSeq' = (IF methodSeq' = "read" THEN evt'.val ELSE "ok")
         /\ history' = history \ {evt'}
         /\ pc' = [pc EXCEPT ![0] = "wh"]
-        /\ UNCHANGED << steps, messages, current, written, retval, seq >>
+        /\ UNCHANGED << steps, messages, methodLin, valueLin, rvalLin, current, 
+                        written, retval, seq >>
 
 Serialize == guard \/ wh \/ next
 
@@ -221,8 +255,13 @@ Spec == /\ Init /\ [][Next]_vars
 
 Termination == <>(\A self \in ProcSet: pc[self] = "Done")
 
-\* END TRANSLATION - the hash of the generated TLA code (remove to silence divergence warnings): TLA-2369b331153387902ffff5fe6a475d5f
+\* END TRANSLATION - the hash of the generated TLA code (remove to silence divergence warnings): TLA-efddbfa1d3cdec6c11b40e410f900e4c
 
-R == INSTANCE register
+\*
+\* Refinement mappings
+\* 
+
+RegLin == INSTANCE register WITH method<-methodLin, value<-valueLin, rval<-rvalLin
+RegSeq == INSTANCE register WITH method<-methodSeq, value<-valueSeq, rval<-rvalSeq
 
 ====
