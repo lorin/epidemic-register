@@ -112,10 +112,19 @@ protocol EpidemicRegister {
 # TLA+
 
 See [epidemic.tla](epidemic.tla) for the TLA+/PlusCal model. The model contains some extra variables
-that aren't needed to model the register but are needed to show that the register is sequentially consequent.
+that aren't needed to model the register but are needed to show that the register is sequentially consistent.
 
 There's a refinement that shows that this implementation is a sequentially consistent implementation
 of the spec [register.tla](register.tla). 
+
+There are actually two refinement mappings in the model, one for a sequentially consistent register (RegSeq),
+and one for a linearizable regiser (RegLin).
+
+## Not linearizable, a counterexample
+
+Alas, the epidemic register isn't linearizable. But that means we can use TLC to find a counter-example:
+
+![error trace](not-linearizable-tla.png)
 
 # Alloy
 

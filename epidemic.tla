@@ -32,16 +32,18 @@ define
 end define;
 
 macro Read() begin
-    seq := seq + 1;
-    retval := current;
-    
-    \* linearization refinement mapping
-    methodLin := "read";
-    valueLin := current;
-    rvalLin := retval;
-    
-    \* needed for sequential consistency refinement mapping
-    history := history \union {[op|->"read", val|->retval,t|->written.number, pid|->written.pid, seq|->seq]};
+    if current /= undef then 
+        retval := current;
+        
+        \* linearization refinement mapping
+        methodLin := "read";
+        valueLin := current;
+        rvalLin := retval;
+        
+        \* needed for sequential consistency refinement mapping
+        seq := seq + 1;
+        history := history \union {[op|->"read", val|->retval,t|->written.number, pid|->written.pid, seq|->seq]};
+    end if;
 end macro;
 
 macro Write(val) begin
@@ -125,7 +127,7 @@ end while;
 end process
 
 end algorithm; *)
-\* BEGIN TRANSLATION - the hash of the PCal code: PCal-220f550f3e95c3c950627584fc0fac6a
+\* BEGIN TRANSLATION - the hash of the PCal code: PCal-91c040f3d12206094e7d6aafb298fc2d
 VARIABLES steps, messages, history, methodLin, valueLin, rvalLin, pc
 
 (* define statement *)
@@ -168,12 +170,17 @@ Init == (* Global variables *)
 loop(self) == /\ pc[self] = "loop"
               /\ IF steps > 0
                     THEN /\ steps' = steps - 1
-                         /\ \/ /\ seq' = [seq EXCEPT ![self] = seq[self] + 1]
-                               /\ retval' = [retval EXCEPT ![self] = current[self]]
-                               /\ methodLin' = "read"
-                               /\ valueLin' = current[self]
-                               /\ rvalLin' = retval'[self]
-                               /\ history' = (history \union {[op|->"read", val|->retval'[self],t|->written[self].number, pid|->written[self].pid, seq|->seq'[self]]})
+                         /\ \/ /\ IF current[self] /= undef
+                                     THEN /\ seq' = [seq EXCEPT ![self] = seq[self] + 1]
+                                          /\ retval' = [retval EXCEPT ![self] = current[self]]
+                                          /\ methodLin' = "read"
+                                          /\ valueLin' = current[self]
+                                          /\ rvalLin' = retval'[self]
+                                          /\ history' = (history \union {[op|->"read", val|->retval'[self],t|->written[self].number, pid|->written[self].pid, seq|->seq'[self]]})
+                                     ELSE /\ TRUE
+                                          /\ UNCHANGED << history, methodLin, 
+                                                          valueLin, rvalLin, 
+                                                          retval, seq >>
                                /\ UNCHANGED <<messages, current, written>>
                             \/ /\ \E v \in Values:
                                     /\ current' = [current EXCEPT ![self] = v]
@@ -255,7 +262,7 @@ Spec == /\ Init /\ [][Next]_vars
 
 Termination == <>(\A self \in ProcSet: pc[self] = "Done")
 
-\* END TRANSLATION - the hash of the generated TLA code (remove to silence divergence warnings): TLA-efddbfa1d3cdec6c11b40e410f900e4c
+\* END TRANSLATION - the hash of the generated TLA code (remove to silence divergence warnings): TLA-7fbc8d9469f76e907c21d58dd2928382
 
 \*
 \* Refinement mappings
