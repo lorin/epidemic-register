@@ -43,7 +43,8 @@ Distributed systems researchers care about registers because, even though
 they are such a simple data structure, even the simplest data structure
 is very complex when implemented in a distributed system!
 
-
+I'm going to use `w(x)` to mean "value x was written to the register" and `r(x)`
+to mean "value x was read from the register.
 
 # What does the CAP theorem really mean?
 
