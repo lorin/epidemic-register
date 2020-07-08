@@ -23,7 +23,7 @@ consistent, available, and partition tolerant!
 
 This repo uses the *epidemic register* as a pedagogical example to cover different concepts in distributed systems theory:
 
-* registers
+* registers (regular, atomic)
 * epidemic protocols
 * CAP theorem
 * consistency models
@@ -58,17 +58,41 @@ is very complex when implemented in a distributed system!
 I'm going to use `w(x)` to mean "value x was written to the register" and `r(x)`
 to mean "value x was read from the register.
 
-# What does "epidemic" mean?
+# What does *epidemic* mean?
 
-The term "epidemic protocol" is a synonym for "gossip protocol". It refers
-to a mechanism of implementing a message broadcast where the message spreads
-through a network from peer to peer. 
+The term *epidemic protocol* is a synonym for *gossip protocol*. It refers
+to a mechanism of implementing a message broadcast where the message propagates
+through a network over time, via peer-to-peer communication.
 
-Epidemic protocols are one way of building AP systems, they remain available
+Epidemic protocols are one way of building systems that remain available
 under partitions. As we'll see in the implementation of the epidemic register,
 reads and writes can complete without having to wait for messages to be exchanged.
 This is different from quorum-based protocols where an operation will block waiting
 for a quorum of nodes to respond to requests.
+
+# Consistency models
+
+Before we get to the CAP theorem, we're going to talk about a few different kinds
+of consistency models, using different types of registers and an example.
+
+## Why care about consistency models?
+
+TBD
+
+## Regular register
+
+In his paper "On Interprocess Communication" Lamport defines a *regular register* as a register where:
+
+* a read not concurrent with a write gets the correct value
+* a read that overlaps a write obtains either the old or new value
+
+## Atomic register
+
+TBD
+
+
+
+
 
 
 # What does the CAP theorem really mean?
