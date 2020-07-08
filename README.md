@@ -15,11 +15,20 @@ all three of the following properties:
 It's true. There's no way to beat the CAP theorem if your system needs *linearizable* consistency. Gilbert
 and Lynch proved that it's impossible to have all three properties.
 
-If we weaken the consistency requirements from linearizable to sequential consistency, that it becomes
-possible to beat the CAP theorem with certain distributed data structures. The *epidemic register* is one such
-example: you can have sequential consistency, available, and partition tolerance with it!
+There's a weaker form of consistency, called sequentialy consistency. Easing the restriction from linearizable
+to sequential consistency doesn't save you in the general case, you still can't beat the CAP theorem. However,
+it turns out that there is a simple distributed data structure called an *epidemic register* which is sequentially
+consistent, available, and partition tolerant! 
 
 
+This repo uses the *epidemic register* as a pedagogical example to cover different concepts in distributed systems theory:
+
+* registers
+* epidemic protocols
+* CAP theorem
+* consistency models
+* TLA+ formal modeling language (including PlusCal and refinement mapping)
+* Alloy formal modeling language
 
 This post uses that register as an example to explain the CAP theorem, as
 well as illustrate how to do some formal specifying use TLA+ and Alloy.
@@ -49,8 +58,17 @@ is very complex when implemented in a distributed system!
 I'm going to use `w(x)` to mean "value x was written to the register" and `r(x)`
 to mean "value x was read from the register.
 
-# What does "epidemic" mean
+# What does "epidemic" mean?
 
+The term "epidemic protocol" is a synonym for "gossip protocol". It refers
+to a mechanism of implementing a message broadcast where the message spreads
+through a network from peer to peer. 
+
+Epidemic protocols are one way of building AP systems, they remain available
+under partitions. As we'll see in the implementation of the epidemic register,
+reads and writes can complete without having to wait for messages to be exchanged.
+This is different from quorum-based protocols where an operation will block waiting
+for a quorum of nodes to respond to requests.
 
 
 # What does the CAP theorem really mean?
