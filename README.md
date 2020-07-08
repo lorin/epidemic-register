@@ -217,3 +217,39 @@ This demonstreates how a sequentially consistent history is not necessarily line
 
 
 [PoEC]: https://www.microsoft.com/en-us/research/publication/principles-of-eventual-consistency/
+
+
+# References
+
+## Sesbastian Burckhardt. Principles of Eventual Consistency, 2014
+
+<https://www.microsoft.com/en-us/research/publication/principles-of-eventual-consistency/>
+
+Burckhardt's book is the primary source material for this work.
+
+
+## Maurice P. Herlihy and Jeannette M. Wing. Linearizability: A Correctness Condition for Concurrent Objects. ACM Transactions on Programming Languages and Systems, Vol. 12, No. 3, July 1990
+
+<http://cs.brown.edu/~mph/HerlihyW90/p463-herlihy.pdf>
+
+Herlihy and Wing introduces the concept of *linearizability* in this paper.
+
+
+## Leslie Lamport. How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Programs. IEEE Transactions on Computers C-28  Vol 9,September 1979
+
+<https://www.microsoft.com/en-us/research/publication/make-multiprocessor-computer-correctly-executes-multiprocess-programs/>
+
+Lamport introduces the concept of *sequential consistency* in this paper.
+
+## Seth Gilbert and Nancy Lynch. Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services, ACM SIGACT News, 2002
+
+<https://www.comp.nus.edu.sg/~gilbert/pubs/BrewersConjecture-SigAct.pdf>
+
+Eric Brewer originally conjectured the CAP Theorem, but it was this paper by Gilbert and Lynch that proved it. Note that the
+proof assumes *linearizable* consistency.
+
+## Leslie Lamport. On Interprocess Communication--Part I: Basic Formalism, Distributed Computing, Vol. 1, No. 2, 1986.
+
+<http://lamport.azurewebsites.net/pubs/interprocess.pdf>
+
+Lamport introduces the concepts of a *regular register* and an *atomic register* in this paper.
