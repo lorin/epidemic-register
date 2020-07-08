@@ -1,22 +1,25 @@
 # Beating the CAP theorem: the epidemic register
+## Or: fun with TLA+ and Alloy
 
 *Note: This is currently a work in progress.*
 
-The CAP theorem states that distributed data structures cannot have
+The CAP theorem, originally conjectured by Eric Brewer, claims that distributed data structures cannot have
 all three of the following properties:
 
-* consistency
-* availability
-* partition tolerance
+* Consistency
+* Availability
+* Partition tolerance
+
+## You can't beat the CAP theorem! Gilbert and Lynch proved it
+
+It's true. There's no way to beat the CAP theorem if your system needs *linearizable* consistency. Gilbert
+and Lynch proved that it's impossible to have all three properties.
+
+If we weaken the consistency requirements from linearizable to sequential consistency, that it becomes
+possible to beat the CAP theorem with certain distributed data structures. The *epidemic register* is one such
+example: you can have sequential consistency, available, and partition tolerance with it!
 
 
-Alas, there's no way to beat the CAP theorem for *linearizable* consistency. However, what about 
-the weaker (but still strong) *sequential consistency*? 
-Well, you still can't beat the CAP theorem in the general case. 
-
-However, if you're willing to settle for sequential consistency, it turns out
-that there is a data structure that has all three properties: the *epidemic
-register*.
 
 This post uses that register as an example to explain the CAP theorem, as
 well as illustrate how to do some formal specifying use TLA+ and Alloy.
@@ -45,6 +48,10 @@ is very complex when implemented in a distributed system!
 
 I'm going to use `w(x)` to mean "value x was written to the register" and `r(x)`
 to mean "value x was read from the register.
+
+# What does "epidemic" mean
+
+
 
 # What does the CAP theorem really mean?
 
@@ -228,6 +235,13 @@ This demonstreates how a sequentially consistent history is not necessarily line
 Burckhardt's book is the primary source material for this work.
 
 
+## Seth Gilbert and Nancy Lynch. Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services, ACM SIGACT News, 2002
+
+<https://www.comp.nus.edu.sg/~gilbert/pubs/BrewersConjecture-SigAct.pdf>
+
+Eric Brewer originally conjectured the CAP Theorem, but it was this paper by Gilbert and Lynch that proved it. Note that the
+proof assumes *linearizable* consistency.
+
 ## Maurice P. Herlihy and Jeannette M. Wing. Linearizability: A Correctness Condition for Concurrent Objects. ACM Transactions on Programming Languages and Systems, Vol. 12, No. 3, July 1990
 
 <http://cs.brown.edu/~mph/HerlihyW90/p463-herlihy.pdf>
@@ -240,13 +254,6 @@ Herlihy and Wing introduces the concept of *linearizability* in this paper.
 <https://www.microsoft.com/en-us/research/publication/make-multiprocessor-computer-correctly-executes-multiprocess-programs/>
 
 Lamport introduces the concept of *sequential consistency* in this paper.
-
-## Seth Gilbert and Nancy Lynch. Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services, ACM SIGACT News, 2002
-
-<https://www.comp.nus.edu.sg/~gilbert/pubs/BrewersConjecture-SigAct.pdf>
-
-Eric Brewer originally conjectured the CAP Theorem, but it was this paper by Gilbert and Lynch that proved it. Note that the
-proof assumes *linearizable* consistency.
 
 ## Leslie Lamport. On Interprocess Communication--Part I: Basic Formalism, Distributed Computing, Vol. 1, No. 2, 1986.
 
