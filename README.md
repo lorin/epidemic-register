@@ -102,6 +102,12 @@ In his paper "On Interprocess Communication" Lamport defines a *regular register
 * a read not concurrent with a write gets the correct value
 * a read that overlaps a write obtains either the old or new value
 
+Here's an example of a valid history for a regular register.
+
+There are two processes, denoted *p* and *q*.
+
+
+
 ![one example of a regular register](regular-good.jpeg)
 
 ## Atomic register
