@@ -92,7 +92,8 @@ of consistency models, using different types of registers and an example.
 
 ## Why care about consistency models?
 
-TBD
+
+
 
 ## Regular register
 
@@ -100,6 +101,8 @@ In his paper "On Interprocess Communication" Lamport defines a *regular register
 
 * a read not concurrent with a write gets the correct value
 * a read that overlaps a write obtains either the old or new value
+
+![one example of a regular register](regular-register.jpeg)
 
 ## Atomic register
 
