@@ -104,11 +104,11 @@ In his paper "On Interprocess Communication" Lamport defines a *regular register
 
 Here's an example of a valid history for a regular register.
 
-There are two processes, denoted *p* and *q*.
+This history shows two processes, denoted *p* and *q*. The second write of *q*, `w(2)` overlaps
+with two of the reads of *p*, `r(1)` and `r(2)`.
 
 
-
-![one example of a regular register](regular-good.jpeg)
+![one example of a regular register](regular-good.jpg)
 
 ## Atomic register
 
