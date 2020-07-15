@@ -92,14 +92,17 @@ of consistency models, using different types of registers and an example.
 
 ## Why care about consistency models?
 
-Roughly speaking, consistency models tell us how much of our intuitions about program behavior
-from the sequential world still hold when we deal with the concurrent world.
+In the concurrent world, operations from multiple processes can overlap in time.
+Roughly speaking, consistency models tell us how much of our intuitions about
+program behavior from the sequential world still hold when we deal with systems
+that can have operations that overlap.
 
  The stronger the consistency model, the more closely the concurrent system behaves to
  a sequential system. Conversely, the weaker the consistency model, the weirder the system
  seems to behave. 
 
 ## Regular register
+
 
 In his paper [On Interprocess Communication][OIC], Lamport defines a *regular register* as a register where:
 
@@ -109,10 +112,18 @@ In his paper [On Interprocess Communication][OIC], Lamport defines a *regular re
 Here's an example of a valid history for a regular register.
 
 This history shows two processes, denoted *p* and *q*. The second write of *q*, `w(2)` overlaps
-with two of the reads of *p*, `r(1)` and `r(2)`.
-
+with two of the reads of *p*, `r(1)` and `r(2)`. 
 
 ![one example of a regular register](regular-good.jpg)
+
+Now, let's look another history:
+
+![a second example of a regular register](regular-bad.jpg)
+
+This one still
+
+
+
 
 ## Atomic register
 
