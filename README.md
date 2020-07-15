@@ -1,7 +1,7 @@
 # Beating the CAP theorem: the epidemic register
 ## Or: fun with TLA+ and Alloy
 
-*Note: This is currently a work in progress.*
+*Note: This is a work in progress.*
 
 The CAP theorem, originally conjectured by Eric Brewer, claims that distributed data structures cannot have
 all three of the following properties:
