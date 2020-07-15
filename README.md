@@ -65,7 +65,8 @@ is very complex when implemented in a distributed system!
 
 I'm going to use `w(x)` to mean "value x was written to the register" and `r(x)`
 to mean "value x was read from the register. For example, to indicate
-"write the value 2 to the register and then read the value 2 from the register" like this:
+"the value 2 was written to the register and then the value 2 from read from
+the register" like this:
 
 ```
 w(2)
