@@ -20,16 +20,16 @@ consistency*.
 
 ## You still can't beat the CAP theorem with sequential consistency!
 
-Here's what [Jepsen has to say about sequential consistency and availability](http://jepsen.io/consistency/models/sequential):
+Alas, switching to sequential consistency can't save us from the CAP theorem
+in the general case. Here's what [Jepsen has to say about sequential consistency and availability](http://jepsen.io/consistency/models/sequential):
 
 > Sequential consistency cannot be totally or sticky available; in the event of a network partition, some or all nodes will be unable to make progress.
 
-Alas, switching to sequential consistency can't save us from the CAP theorem
-in the general case. However, it turns out that there is a simple distributed
-data structure called an *epidemic register* which is sequentially
+However, it turns out that there is a simple distributed data structure called an *epidemic register* which is sequentially
 consistent, available, and partition tolerant!
 
-This repository uses the *epidemic register* as a pedagogical example to cover different concepts in distributed systems theory:
+This repository uses the *epidemic register* as a pedagogical example to cover different concepts in distributed systems theory and
+lightweight formal methods:
 
 * registers (regular, atomic)
 * epidemic protocols
@@ -38,10 +38,10 @@ This repository uses the *epidemic register* as a pedagogical example to cover d
 * TLA+ formal modeling language (including PlusCal and refinement mapping)
 * Alloy formal modeling language
 
-This post uses that register as an example to explain the CAP theorem, as
+This doc uses that register as an example to explain the CAP theorem, as
 well as illustrate how to do some formal specifying use TLA+ and Alloy.
 
-Much of this post comes directly from Sebastian Burckhardt's excellent (free!) book 
+Much of this doc comes directly from Sebastian Burckhardt's excellent (free!) book 
 [Principles of Eventual Consistency][PoEC]. I'm just going to call it [PoEC] from here on.
 
 # What's a register?
