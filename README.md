@@ -92,12 +92,16 @@ of consistency models, using different types of registers and an example.
 
 ## Why care about consistency models?
 
+Roughly speaking, consistency models tell us how much of our intuitions about program behavior
+from the sequential world still hold when we deal with the concurrent world.
 
-
+ The stronger the consistency model, the more closely the concurrent system behaves to
+ a sequential system. Conversely, the weaker the consistency model, the weirder the system
+ seems to behave. 
 
 ## Regular register
 
-In his paper "On Interprocess Communication" Lamport defines a *regular register* as a register where:
+In his paper [On Interprocess Communication][OIC], Lamport defines a *regular register* as a register where:
 
 * a read not concurrent with a write gets the correct value
 * a read that overlaps a write obtains either the old or new value
@@ -322,6 +326,8 @@ Herlihy and Wing introduces the concept of *linearizability* in this paper.
 Lamport introduces the concept of *sequential consistency* in this paper.
 
 ## Leslie Lamport. On Interprocess Communication--Part I: Basic Formalism, Distributed Computing, Vol. 1, No. 2, 1986.
+
+[OIC]: http://lamport.azurewebsites.net/pubs/interprocess.pdf
 
 <http://lamport.azurewebsites.net/pubs/interprocess.pdf>
 
