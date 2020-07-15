@@ -15,13 +15,21 @@ all three of the following properties:
 It's true. There's no way to beat the CAP theorem if your system needs *linearizable* consistency. Gilbert
 and Lynch proved that it's impossible to have all three properties.
 
-There's a weaker form of consistency, called sequential consistency. Easing the restriction from linearizable
-to sequential consistency doesn't save you in the general case, you still can't beat the CAP theorem. However,
-it turns out that there is a simple distributed data structure called an *epidemic register* which is sequentially
-consistent, available, and partition tolerant! 
+There is a consistency model that, while weaker than linearizability, is still considered a strong model: *sequential
+consistency*.
 
+## You still can't beat the CAP theorem with sequential consistency!
 
-This repo uses the *epidemic register* as a pedagogical example to cover different concepts in distributed systems theory:
+Here's what [Jepsen has to say about sequential consistency and availability](http://jepsen.io/consistency/models/sequential):
+
+> Sequential consistency cannot be totally or sticky available; in the event of a network partition, some or all nodes will be unable to make progress.
+
+Alas, switching to sequential consistency can't save us from the CAP theorem
+in the general case. However, it turns out that there is a simple distributed
+data structure called an *epidemic register* which is sequentially
+consistent, available, and partition tolerant!
+
+This repository uses the *epidemic register* as a pedagogical example to cover different concepts in distributed systems theory:
 
 * registers (regular, atomic)
 * epidemic protocols
