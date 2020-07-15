@@ -42,14 +42,14 @@ This doc uses that register as an example to explain the CAP theorem, as
 well as illustrate how to do some formal specifying use TLA+ and Alloy.
 
 Much of this doc comes directly from Sebastian Burckhardt's excellent (free!) book 
-[Principles of Eventual Consistency][PoEC]. I'm just going to call it [PoEC] from here on.
+[Principles of Eventual Consistency][PoEC]. I'm just going to call it [PoEC] from here on out.
 
 # What's a register?
 
 A register is a data structure that supports two operations:
 
-* write value
-* read value
+* write a value
+* read a value
 
 A register behaves like a variable in a programming language. It's
 such a simple data structure that you may not have even heard
@@ -64,7 +64,13 @@ they are such a simple data structures, even the simplest data structure
 is very complex when implemented in a distributed system!
 
 I'm going to use `w(x)` to mean "value x was written to the register" and `r(x)`
-to mean "value x was read from the register.
+to mean "value x was read from the register. For example, to indicate
+"write the value 2 to the register and then read the value 2 from the register" like this:
+
+```
+w(2)
+r(2)
+```
 
 # What does *epidemic* mean?
 
